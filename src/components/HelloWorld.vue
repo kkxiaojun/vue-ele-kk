@@ -5,14 +5,21 @@
 </template>
 
 <script>
+import {getCity} from 'api/index'
 export default {
   name: 'HelloWorld',
-  data () {
+  data: function () {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      msg: 'welcome to here'
     }
   },
-  created: function () {}
+  created: function () {
+    getCity(res => {
+      if (res.status === 200) {
+        this.msg = res.data.name
+      }
+    })
+  }
 }
 </script>
 

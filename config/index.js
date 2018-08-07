@@ -6,14 +6,19 @@ const path = require('path')
 
 module.exports = {
   dev: {
-
+    env: {
+      NODE_ENV: '"development"'
+    },
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true
+        target: 'http://cangdu.org:8001',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '' //本身的接口地址没有 '/api' 这种通用前缀，所以要rewrite，如果本身有则去掉
+        },
       }
     },
 
