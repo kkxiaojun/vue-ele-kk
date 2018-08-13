@@ -1,6 +1,7 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
+  <div class="home">
+    <header>当前城市</header>
+    <nav>热门城市</nav>
   </div>
 </template>
 
