@@ -2,22 +2,27 @@
   <div id="app">
     <transition name="router-fade" mode="out-in">
       <keep-alive>
-        <router-view v-if="$router.meta.keepAlive"></router-view>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
       </keep-alive>
     </transition>
     <transition name="router-fade" mode="out-in">
-      <router-view v-if="!$router.meta.keepAlive"></router-view>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </transition>
   </div>
 </template>
 
 <script>
+import SvgIcon from 'components/common/svg'
 export default {
-  name: 'App'
+  name: 'App',
+  components:{
+    SvgIcon
+  }
 }
 </script>
 
 <style lang="scss">
+@import 'common/scss/common';
 .router-fade-enter-active, .router-fade-leave-active {
   transition: opacity .3s;
 }

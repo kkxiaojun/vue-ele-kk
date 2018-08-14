@@ -1,43 +1,35 @@
 <template>
   <div class="home">
-    <header>当前城市</header>
-    <nav>热门城市</nav>
+    <header class="head_top">
+      <span class="head_logo">ele</span>
+      <a class="head_login">登录|注册</a>
+    </header>
+    <nav class="city_nav">
+      <div class="cuty_tip">{{guessCity}}</div>
+      <a class="cur_city"><span class="arrow_right"></span></a>
+    </nav>
   </div>
 </template>
 
 <script>
-import {getCity} from 'api/index'
+import { getCity } from "api/index";
 export default {
-  name: 'HelloWorld',
-  data: function () {
+  name: "Home",
+  data: function() {
     return {
-      msg: 'welcome to here'
-    }
+      guessCity: "广州"
+    };
   },
-  created: function () {
-    getCity('guess', res => {
+  created: function() {
+    getCity("guess", res => {
       if (res.status === 200) {
-        this.msg = res.data.name
+        this.guessCity = res.data.name;
       }
-    })
+    });
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less" scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
+<style lang="scss" scoped>
 </style>

@@ -3,8 +3,10 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router/router'
+import './common/js/rem'
 import FastClick from 'fastclick'
 
+// 解决移动端click事件延迟300ms（为了判断是单击还是双击）
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function () {
     FastClick.attach(document.body)
