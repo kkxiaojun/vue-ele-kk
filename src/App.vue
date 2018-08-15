@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import 'common/scss/common';
+@import '~common/scss/common';
 .router-fade-enter-active, .router-fade-leave-active {
   transition: opacity .3s;
 }
