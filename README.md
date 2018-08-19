@@ -26,4 +26,4 @@ npm run build --report
  当然，开始写的时候也可以根据原型图和界面功能结构一个个往下写，[饿了么app原型图链接地址](https://www.xiaopiu.com/user?uid=5b69b06ec496fe18064cd5c0&libPop=project&libId=5b69b085c496fe18064cd5c2)
 
 ## 功能说明
-![图片](../static/mian.jpg)
+![图片](https://github.com/kkxiaojun/vue-ele-kk/blob/master/static/main.jpg)
