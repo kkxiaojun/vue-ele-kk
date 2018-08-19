@@ -2,49 +2,154 @@
   <div class="home">
     <head-top></head-top>
     <nav class="city_nav">
-      <div class="city_tip">{{guessCity}}</div>
-      <a class="cur_city"><span class="arrow_right"></span></a>
+      <div class="city_tip">
+        <span>当前定位城市：</span>
+        <span>定位不准时请在城市列表中选择</span>
+      </div>
+      <a class="cur_city">
+        <span>{{guessCity}}</span>
+        <svg class="arrow_right">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+        </svg>
+      </a>
     </nav>
-    <section class="hot_city_container"></section>
-    <section class="list_city_container"></section>
+    <section class="hot_city_container">
+      <h4 class="city_title">热门城市</h4>
+      <ul class="city_list clear">
+        <li class="left" v-for="(item, index) in hotCity" :key="index">{{item.name}}</li>
+      </ul>
+    </section>
+    <section class="list_city_container">
+      <div v-for="(letter, key, index) in groupCityDesc" :key="key" class="city_letter">
+        <h4 class="city_title">{{key}}
+          <span v-if="index === 0">（按字母顺序排列）</span>
+        </h4>
+        <ul class="city_list clear">
+          <li class="left ellipsis" v-for="(item, index) in letter" :key="index">{{item.name}}</li>
+        </ul>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-import headTop from 'components/header/header'
-import { getCity } from "api/index"
+import HeadTop from "components/header/header";
+import { getCity } from "api/index";
+import Util from "common/js/util";
 export default {
   name: "Home",
   data: function() {
     return {
-      guessCity: "广州"
+      guessCity: "广州", // 当前城市
+      hotCity: [], // 热门城市
+      groupCity: {} // a-z所有城市
     };
+  },
+  computed: {
+    // 按字母顺序A-Z排序
+    groupCityDesc() {
+      let arr = {};
+      for (let i = 65; i <= 90; i++) {
+        if (this.groupCity[String.fromCharCode(i)]) {
+          arr[String.fromCharCode(i)] = this.groupCity[String.fromCharCode(i)];
+        }
+      }
+      return arr;
+    }
   },
   created: function() {
     getCity("guess", res => {
-      if (res.status === 200) {
-        this.guessCity = res.data.name
+      if (Util.checkCode(res.status)) {
+        this.guessCity = res.data.name;
+      }
+    });
+    getCity("hot", res => {
+      if (Util.checkCode(res.status)) {
+        this.hotCity = res.data;
+      }
+    });
+    getCity("group", res => {
+      if (Util.checkCode(res.status)) {
+        this.groupCity = res.data;
       }
     });
   },
-  components:{
-    headTop
+  components: {
+    HeadTop
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-@import '~common/scss/mixin';
-.home{
-  .city_nav{
-    padding-top: 1.91em;
+@import "~common/scss/mixin";
+.home {
+  .city_nav {
+    margin-bottom: 0.4rem;
+    padding-top: 2.35rem;
+    border-top: 1px solid $bc;
+    background-color: $fc;
+    .city_tip {
+      @include fj;
+      padding: 0.4rem;
+      span:nth-of-type(1) {
+        @include sc(0.55rem, #666);
+      }
+      span:nth-of-type(2) {
+        @include sc(0.55rem, #666);
+      }
+    }
+    .cur_city {
+      @include fj;
+      align-items: center;
+      @include font(0.8rem, 1.8rem);
+      padding: 0 0.4rem;
+      border-top: 1px solid $bc;
+      border-bottom: 2px solid $bc;
+      span:nth-of-type(1) {
+        color: $blue;
+      }
+      .arrow_right {
+        fill: #999;
+        @include wh(0.6rem, 0.6rem);
+      }
+    }
   }
-  .hot_city_container{
-
+  .hot_city_container {
+    background-color: #fff;
+    margin-bottom: 0.4rem;
+    li{
+      @include sc(0.7rem, $blue);
+    }
   }
-  .list_city_container{
-
+  .list_city_container {
+    li{
+      @include sc(0.6rem, #666);
+    }
+    .city_letter {
+      background-color: #fff;
+      margin-bottom: 0.4rem;
+    }
+  }
+  .city_title {
+    @include sc(0.7rem, #666);
+    padding: 0.4rem;
+    border: 1px solid $bc;
+    span{
+      @include sc(0.4rem, #666);
+    }
+  }
+  .city_list {
+    li {
+      width: 25%;
+      // @include ct;
+      height: 1.75rem;
+      line-height: 1.75rem;
+      text-align: center;
+      padding: 0 0.3rem;
+      border-right: 1px solid $bc;
+      border-bottom: 1px solid $bc;
+    }
   }
 }
 </style>

@@ -8,11 +8,12 @@
     <transition name="router-fade" mode="out-in">
       <router-view v-if="!$route.meta.keepAlive"></router-view>
     </transition>
+    <svg-icon></svg-icon>
   </div>
 </template>
 
 <script>
-import SvgIcon from 'components/common/svg'
+import SvgIcon from 'components/common/svg';
 export default {
   name: 'App',
   components:{

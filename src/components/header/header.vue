@@ -1,14 +1,14 @@
 <template>
   <div>
     <header class="head_top">
-      <span class="head_logo">ele</span>
+      <span class="head_logo">guoguo</span>
       <a class="head_login">登录|注册</a>
     </header>
   </div>
 </template>
 <script>
 export default {
-  name: "header",
+  name: "headertop",
   data() {
     return {
       title: "header"
@@ -26,6 +26,16 @@ export default {
   @include wh(100%, 1.95rem);
   z-index: 100;
   background-color: $blue;
+  .head_logo{
+    left: 0.4rem;
+    @include ct;
+    @include sc(0.70rem, $fc);
+  }
+  .head_login{
+    right: 0.50rem;
+    @include ct;
+    @include sc(0.70rem, $fc);
+  }
 }
 </style>
 
