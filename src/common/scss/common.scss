@@ -44,6 +44,10 @@ input[type="button"], input[type="submit"], input[type="search"], input[type="re
     -webkit-appearance: none;
 }
 
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+}
+
 textarea { -webkit-appearance: none;}   
 
 html,body{
@@ -94,7 +98,7 @@ html,body{
     white-space: nowrap;
 }
 
-.paddingTop{
+.padding_top{
     padding-top: 1.95rem;
 }
 
