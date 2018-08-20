@@ -2,7 +2,7 @@
   <div>
     <header class="head_top">
       <span class="head_logo">guoguo</span>
-      <a class="head_login">登录|注册</a>
+      <router-link to="/login" class="head_login" >登录|注册</router-link>
     </header>
   </div>
 </template>
