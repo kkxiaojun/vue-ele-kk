@@ -3,24 +3,25 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const home = () => import('../pages/home/home')
-const login = () => import('../pages/login/login')
+const Home = () => import('../pages/home/home')
+const Login = () => import('../pages/login/login')
+const Forget = () => import('../pages/forget/forget')
 export default new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: home
+      component: Home
     },
     {
       path: '/login',
       name: 'login',
-      component: login
+      component: Login
     },
     {
       path: '/forget',
       name: 'forget',
-      component: login
+      component: Forget
     }
   ]
 })

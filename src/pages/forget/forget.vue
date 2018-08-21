@@ -1,8 +1,8 @@
 <template>
-  <div class="login">
+  <div class="forget">
     <form action="" class="form">
       <div class="form_row">
-        <input type="text" v-model="" name="username" placeholder="用户名">
+        <input type="text" name="username" placeholder="用户名">
       </div>
       <div class="form_row">
         <input type="password" name="password" placeholder="密码">
@@ -10,7 +10,7 @@
       <div class="form_row">
         <input type="text" name="valide" placeholder="验证码">
         <div class="check_code_container">
-          <img src="" alt="img">
+          <img :src="1" alt="img">
           <div class="img_change">
             <p>看不清</p>
             <p>换一张</p>
@@ -18,29 +18,19 @@
         </div>
       </div>
     </form>
-    <p class="login_tips">温馨提示：未注册的用户登录时将自动注册</p>
-    <p class="login_tips">已注册的用户可直接登录</p>
-    <div class="login_btn">
-      <span>登陆</span>
+    <p class="forget_tips">温馨提示：未注册的用户登录时将自动注册</p>
+    <p class="forget_tips">已注册的用户可直接登录</p>
+    <div class="forget_btn">
+      <span>确认重置</span>
     </div>
-    <router-link to="/forget" class="login_forget">忘记密码</router-link>
   </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      user:{
-        username:'',
-        password:''
-      }
-    }
-  }
-};
+export default {};
 </script>
 <style lang="scss" scoped>
 @import "~common/scss/mixin";
-.login {
+.forget {
   padding-top: 1.7rem;
   p,span,input {
     font-family: Helvetica Neue, Tahoma, Arial;
@@ -69,12 +59,12 @@ export default {
       }
     }
   }
-  .login_tips {
+  .forget_tips {
     @include sc(0.5rem, #eb2626);
     padding: 0.4rem 0.6rem;
     line-height: 0.5rem;
   }
-  .login_btn{
+  .forget_btn{
     text-align: center;
     margin: 0 .5rem 1rem;
     padding: 0.2rem 0;
@@ -84,11 +74,6 @@ export default {
     span{
       @include sc(0.7rem, #fff);
     }
-  }
-  .login_forget{
-    float: right;
-    @include sc(0.6rem, $blue);
-    margin-right: 0.7rem;
   }
 }
 </style>
