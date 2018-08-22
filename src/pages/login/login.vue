@@ -28,24 +28,24 @@
   </div>
 </template>
 <script>
-import HeadTop from 'components/header/header';
+import HeadTop from "components/header/header";
 import Util from "common/js/util";
-import {getCheckCode, Login} from 'api/index';
+import { getCheckCode, login } from "api/index";
 export default {
   data() {
     return {
-      user:{
-        username:'',
-        password:''
+      user: {
+        username: "",
+        password: ""
       },
       userInfo: null, // 用户信息
       loginWay: false, //登录方式，默认短信登录
       checkCodeBase64: null, // 验证码图片
-      checkCodeNumber: null  // 验证码number
-    }
+      checkCodeNumber: null // 验证码number
+    };
   },
   created() {
-    this.getCheckCode();
+    this.getCheckCode()
   },
   methods: {
     getCheckCode() {
@@ -54,23 +54,24 @@ export default {
         if (Util.checkCode(res.status)) {
           _this.checkCodeBase64 = res.data.code
         }
-      })
+      });
     },
     changeCodeImg() {
-      this.getCheckCode()
+      this.getCheckCode();
     },
     login() {
-      var _this = this
+      var _this = this;
       let params = {
-        username: user.username,
-        password: user.password,
-        captcha_code: checkCodeNumber
-      }
-      Login(params, (res) => {
+        username: this.user.username,
+        password: this.user.password,
+        captcha_code: this.checkCodeNumber
+      };
+      login(params, res => {
         if (Util.checkCode(res.status)) {
           _this.userInfo = res.data
+          _this.$router.push('/profile')
         }
-      })
+      });
     }
   },
   components: {
@@ -82,7 +83,9 @@ export default {
 @import "~common/scss/mixin";
 .login {
   padding-top: 1.7rem;
-  p,span,input {
+  p,
+  span,
+  input {
     font-family: Helvetica Neue, Tahoma, Arial;
   }
   .form {
@@ -94,15 +97,15 @@ export default {
       input {
         @include sc(0.7rem, #666);
       }
-      .check_code_container{
+      .check_code_container {
         @include fj;
-        img{
+        img {
           @include wh(3.5rem, 1.5rem);
           margin-right: 0.4rem;
         }
-        .img_change{
+        .img_change {
           @include sc(0.5rem, #666);
-          p:nth-of-type(2){
+          p:nth-of-type(2) {
             color: $blue;
           }
         }
@@ -114,18 +117,18 @@ export default {
     padding: 0.4rem 0.6rem;
     line-height: 0.5rem;
   }
-  .login_btn{
+  .login_btn {
     text-align: center;
-    margin: 0 .5rem 1rem;
+    margin: 0 0.5rem 1rem;
     padding: 0.2rem 0;
     background-color: #4cd964;
     border: 1px solid #4cd964;
     @include borderRadius(0.15rem);
-    span{
+    span {
       @include sc(0.7rem, #fff);
     }
   }
-  .login_forget{
+  .login_forget {
     float: right;
     @include sc(0.6rem, $blue);
     margin-right: 0.7rem;

@@ -6,6 +6,7 @@ Vue.use(Router)
 const Home = () => import('../pages/home/home')
 const Login = () => import('../pages/login/login')
 const Forget = () => import('../pages/forget/forget')
+const Profile = () => import('../pages/profile/profile')
 export default new Router({
   routes: [
     {
@@ -15,7 +16,7 @@ export default new Router({
     },
     {
       path: '/home',
-      name: 'home',
+      name: 'home1',
       component: Home
     },
     {
@@ -27,6 +28,11 @@ export default new Router({
       path: '/forget',
       name: 'forget',
       component: Forget
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: Profile
     }
   ]
 })

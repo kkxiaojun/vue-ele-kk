@@ -31,7 +31,7 @@ export function getCheckCode (callback) {
 }
 export function login (data, callback) {
   axios({
-    method: 'get',
+    method: 'post',
     url: 'api/v2/login',
     params: data
   })
