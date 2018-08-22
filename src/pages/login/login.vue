@@ -1,19 +1,20 @@
 <template>
   <div class="login">
+    <head-top :head-title="loginWay? '登录':'密码登录'" :sign-up="true" :go-back="true"></head-top>
     <form action="" class="form">
       <div class="form_row">
-        <input type="text" v-model="" name="username" placeholder="用户名">
+        <input type="text" v-model="user.username" name="username" placeholder="用户名">
       </div>
       <div class="form_row">
-        <input type="password" name="password" placeholder="密码">
+        <input type="password" v-model="user.password" name="password" placeholder="密码">
       </div>
       <div class="form_row">
-        <input type="text" name="valide" placeholder="验证码">
+        <input type="text" v-model="checkCodeNumber" name="valide" placeholder="验证码">
         <div class="check_code_container">
-          <img src="" alt="img">
+          <img :src="checkCodeBase64" alt="img">
           <div class="img_change">
             <p>看不清</p>
-            <p>换一张</p>
+            <p @click="changeCodeImg">换一张</p>
           </div>
         </div>
       </div>
@@ -21,20 +22,59 @@
     <p class="login_tips">温馨提示：未注册的用户登录时将自动注册</p>
     <p class="login_tips">已注册的用户可直接登录</p>
     <div class="login_btn">
-      <span>登陆</span>
+      <span @click="login">登陆</span>
     </div>
     <router-link to="/forget" class="login_forget">忘记密码</router-link>
   </div>
 </template>
 <script>
+import HeadTop from 'components/header/header';
+import Util from "common/js/util";
+import {getCheckCode, Login} from 'api/index';
 export default {
   data() {
     return {
       user:{
         username:'',
         password:''
-      }
+      },
+      userInfo: null, // 用户信息
+      loginWay: false, //登录方式，默认短信登录
+      checkCodeBase64: null, // 验证码图片
+      checkCodeNumber: null  // 验证码number
     }
+  },
+  created() {
+    this.getCheckCode();
+  },
+  methods: {
+    getCheckCode() {
+      var _this = this;
+      getCheckCode(res => {
+        if (Util.checkCode(res.status)) {
+          _this.checkCodeBase64 = res.data.code
+        }
+      })
+    },
+    changeCodeImg() {
+      this.getCheckCode()
+    },
+    login() {
+      var _this = this
+      let params = {
+        username: user.username,
+        password: user.password,
+        captcha_code: checkCodeNumber
+      }
+      Login(params, (res) => {
+        if (Util.checkCode(res.status)) {
+          _this.userInfo = res.data
+        }
+      })
+    }
+  },
+  components: {
+    HeadTop
   }
 };
 </script>
@@ -58,7 +98,7 @@ export default {
         @include fj;
         img{
           @include wh(3.5rem, 1.5rem);
-          margin-right: 0.2rem;
+          margin-right: 0.4rem;
         }
         .img_change{
           @include sc(0.5rem, #666);

@@ -1,6 +1,8 @@
 <template>
   <div class="home">
-    <head-top></head-top>
+    <head-top :sign-up="false" :go-back="false">
+      <span slot='logo' class="head_logo">guoguo</span>
+    </head-top>
     <nav class="city_nav">
       <div class="city_tip">
         <span>当前定位城市：</span>
@@ -38,7 +40,7 @@ import { getCity } from "api/index";
 import Util from "common/js/util";
 export default {
   name: "Home",
-  data: function() {
+  data() {
     return {
       guessCity: "广州", // 当前城市
       hotCity: [], // 热门城市
@@ -57,7 +59,7 @@ export default {
       return arr;
     }
   },
-  created: function() {
+  created() {
     getCity("guess", res => {
       if (Util.checkCode(res.status)) {
         this.guessCity = res.data.name;
