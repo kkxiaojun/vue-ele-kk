@@ -31,6 +31,7 @@
 import HeadTop from "components/header/header";
 import Util from "common/js/util";
 import { getCheckCode, login } from "api/index";
+import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -48,6 +49,9 @@ export default {
     this.getCheckCode()
   },
   methods: {
+    ...mapMutations([
+      'RECORD_USERINFO'
+    ]),
     getCheckCode() {
       var _this = this;
       getCheckCode(res => {
@@ -69,6 +73,7 @@ export default {
       login(params, res => {
         if (Util.checkCode(res.status)) {
           _this.userInfo = res.data
+          _this.RECORD_USER(res.data)
           _this.$router.push('/profile')
         }
       });

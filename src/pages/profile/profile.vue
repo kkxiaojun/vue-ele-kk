@@ -124,9 +124,15 @@
 </template>
 <script>
 import HeadTop from "components/header/header";
+import { mapState } from 'vuex';
 export default {
   data() {
     return {};
+  },
+  computed: {
+    ...mapState([
+      'userInfo'
+    ])
   },
   components: {
     HeadTop
@@ -177,8 +183,7 @@ export default {
     .data_container {
       display: flex;
       .data_info_link {
-        width: 33.33%;
-        order: 1;
+        flex: 1;
         padding: 0.5rem 0;
         text-align: center;
         background-color: #fff;
