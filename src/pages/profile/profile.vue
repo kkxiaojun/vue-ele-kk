@@ -3,12 +3,15 @@
     <head-top head-title="我的" :sign-up="true" :go-back="true"></head-top>
     <section class="profile_bar">
       <a href="" class="link">
-        <img src="" alt="" />
+        <img :src="avatar" alt="avatar" />
         <div class="number">
-          <p class="username">hope</p>
+          <p class="username">{{username}}</p>
           <p class="msg">
-            <span class="phone_icon">【】</span>
-            <span class="phone_no">暂无绑定手机号</span>
+            <span class="phone_icon">                                
+              <svg class="icon-mobile" fill="#fff">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mobile"></use>
+              </svg></span>
+            <span class="phone_no">{{phone}}</span>
             <!-- <span class="phone_num"></span> -->
           </p>
         </div>
@@ -23,19 +26,19 @@
       <ul class="data_container">
         <li class="data_info_link">
           <p class="balance_top">
-            <span class="money">000.00</span>元
+            <span class="money">{{balance}}</span>元
           </p>
           <p class="balance_bottom">我的余额</p>
         </li>
         <li class="data_info_link">
           <p class="balance_top">
-            <span class="discount">000.00</span>个
+            <span class="discount">{{discount}}</span>个
           </p>
           <p class="balance_bottom">我的优惠</p>
         </li>
         <li class="data_info_link">
           <p class="balance_top">
-            <span class="point">000.00</span>分
+            <span class="point">{{point}}</span>分
           </p>
           <p class="balance_bottom">积分</p>
         </li>
@@ -127,15 +130,35 @@ import HeadTop from "components/header/header";
 import { mapState } from 'vuex';
 export default {
   data() {
-    return {};
+    return {
+      username: '登录/注册',
+      phone: '未绑定手机号',
+      balance: 0, // 余额
+      discount: 0, // 优惠
+      point: 0, // 积分
+      avatar: '' // 头像
+    };
+  },
+  mounted() {
+    this.initUserInfo()
   },
   computed: {
     ...mapState([
       'userInfo'
     ])
   },
+  methods: {
+    initUserInfo() {
+
+    }
+  },
   components: {
     HeadTop
+  },
+  watch: {
+    userInfo: function () {
+      this.initUserInfo()
+    }
   }
 };
 </script>
@@ -167,6 +190,7 @@ export default {
         .msg {
           @include sc(0.6rem, #fff);
           .phone_icon {
+            .icon-mobile{}
           }
           .phone_no {
             @include sc(0.5rem, #fff);
