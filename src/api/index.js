@@ -33,7 +33,7 @@ export function login (data, callback) {
   axios({
     method: 'post',
     url: 'api/v2/login',
-    params: data
+    data: data
   })
     .then(res => {
       callback(res)

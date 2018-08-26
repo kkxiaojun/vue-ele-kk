@@ -21,23 +21,23 @@
     </form>
     <p class="login_tips">温馨提示：未注册的用户登录时将自动注册</p>
     <p class="login_tips">已注册的用户可直接登录</p>
-    <div class="login_btn">
-      <span @click="login">登陆</span>
+    <div class="login_btn" @click="loginTo">
+      <span>登陆</span>
     </div>
     <router-link to="/forget" class="login_forget">忘记密码</router-link>
   </div>
 </template>
 <script>
 import HeadTop from "components/header/header";
-import Util from "common/js/util";
+import {checkCode} from "common/js/util";
 import { getCheckCode, login } from "api/index";
 import { mapMutations } from 'vuex';
 export default {
   data() {
     return {
       user: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       },
       userInfo: null, // 用户信息
       loginWay: false, //登录方式，默认短信登录
@@ -55,7 +55,7 @@ export default {
     getCheckCode() {
       var _this = this;
       getCheckCode(res => {
-        if (Util.checkCode(res.status)) {
+        if (checkCode(res.status)) {
           _this.checkCodeBase64 = res.data.code
         }
       });
@@ -63,20 +63,22 @@ export default {
     changeCodeImg() {
       this.getCheckCode();
     },
-    login() {
-      var _this = this;
+    loginTo() {
+      console.log('login')
+      var _this = this
       let params = {
         username: this.user.username,
         password: this.user.password,
         captcha_code: this.checkCodeNumber
-      };
+      }
       login(params, res => {
-        if (Util.checkCode(res.status)) {
+        console.log(res)
+        if (checkCode(res.status)) {
           _this.userInfo = res.data
-          _this.RECORD_USER(res.data)
+          _this.RECORD_USERINFO(res.data)
           _this.$router.push('/profile')
         }
-      });
+      })
     }
   },
   components: {

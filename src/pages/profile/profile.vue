@@ -3,7 +3,7 @@
     <head-top head-title="我的" :sign-up="true" :go-back="true"></head-top>
     <section class="profile_bar">
       <a href="" class="link">
-        <img :src="avatar" alt="avatar" />
+        <img :src="avatar" alt="" />
         <div class="number">
           <p class="username">{{username}}</p>
           <p class="msg">
@@ -136,7 +136,7 @@ export default {
       balance: 0, // 余额
       discount: 0, // 优惠
       point: 0, // 积分
-      avatar: '' // 头像
+      avatar: 'common/images/avatar.png' // 头像
     };
   },
   mounted() {
@@ -149,7 +149,12 @@ export default {
   },
   methods: {
     initUserInfo() {
-
+      this.username = this.userInfo.username
+      this.avatar = this.userInfo.avatar
+      this.phone = this.userInfo.mobile ? this.userInfo.mobile : '未绑定手机号'
+      this.balance = this.userInfo.balance
+      this.discount = this.userInfo.gift_amount
+      this.point = this.userInfo.point
     }
   },
   components: {
@@ -190,7 +195,11 @@ export default {
         .msg {
           @include sc(0.6rem, #fff);
           .phone_icon {
-            .icon-mobile{}
+            display: inline-block;
+            vertical-align: middle;
+            svg{
+              @include wh(0.7rem, 0.7rem);
+            }
           }
           .phone_no {
             @include sc(0.5rem, #fff);

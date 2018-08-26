@@ -37,7 +37,7 @@
 <script>
 import HeadTop from "components/header/header";
 import { getCity } from "api/index";
-import Util from "common/js/util";
+import {checkCode} from "common/js/util";
 export default {
   name: "Home",
   data() {
@@ -61,17 +61,17 @@ export default {
   },
   created() {
     getCity("guess", res => {
-      if (Util.checkCode(res.status)) {
+      if (checkCode(res.status)) {
         this.guessCity = res.data.name;
       }
     });
     getCity("hot", res => {
-      if (Util.checkCode(res.status)) {
+      if (checkCode(res.status)) {
         this.hotCity = res.data;
       }
     });
     getCity("group", res => {
-      if (Util.checkCode(res.status)) {
+      if (checkCode(res.status)) {
         this.groupCity = res.data;
       }
     });

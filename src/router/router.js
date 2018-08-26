@@ -7,6 +7,7 @@ const Home = () => import('../pages/home/home')
 const Login = () => import('../pages/login/login')
 const Forget = () => import('../pages/forget/forget')
 const Profile = () => import('../pages/profile/profile')
+const City = () => import('../pages/city/city')
 export default new Router({
   routes: [
     {
@@ -18,6 +19,11 @@ export default new Router({
       path: '/home',
       name: 'home1',
       component: Home
+    },
+    {
+      path: '/city',
+      name: 'city',
+      component: City
     },
     {
       path: '/login',

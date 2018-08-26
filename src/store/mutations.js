@@ -1,3 +1,4 @@
+import {setStore} from 'common/js/util'
 import {RECORD_USERINFO} from './mutation_type'
 export default {
   // 记录用户信息
