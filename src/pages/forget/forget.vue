@@ -26,55 +26,57 @@
   </div>
 </template>
 <script>
-export default {};
+export default {}
 </script>
 <style lang="scss" scoped>
-@import "~common/scss/mixin";
+@import '~common/scss/mixin';
 .forget {
-  padding-top: 1.7rem;
-  p,span,input {
-    font-family: Helvetica Neue, Tahoma, Arial;
-  }
-  .form {
-    background-color: #fff;
-    .form_row {
-      @include fj;
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #f1f1f1;
-      input {
-        @include sc(0.7rem, #666);
-      }
-      .check_code_container{
-        @include fj;
-        img{
-          @include wh(3.5rem, 1.5rem);
-          margin-right: 0.2rem;
-        }
-        .img_change{
-          @include sc(0.5rem, #666);
-          p:nth-of-type(2){
-            color: $blue;
-          }
-        }
-      }
-    }
-  }
-  .forget_tips {
-    @include sc(0.5rem, #eb2626);
-    padding: 0.4rem 0.6rem;
-    line-height: 0.5rem;
-  }
-  .forget_btn{
-    text-align: center;
-    margin: 0 .5rem 1rem;
-    padding: 0.2rem 0;
-    background-color: #4cd964;
-    border: 1px solid #4cd964;
-    @include borderRadius(0.15rem);
-    span{
-      @include sc(0.7rem, #fff);
-    }
-  }
+	padding-top: 1.7rem;
+	p,
+	span,
+	input {
+		font-family: Helvetica Neue, Tahoma, Arial;
+	}
+	.form {
+		background-color: #fff;
+		.form_row {
+			@include fj;
+			padding: 0.6rem 0.8rem;
+			border-bottom: 1px solid #f1f1f1;
+			input {
+				@include sc(0.7rem, #666);
+			}
+			.check_code_container {
+				@include fj;
+				img {
+					@include wh(3.5rem, 1.5rem);
+					margin-right: 0.2rem;
+				}
+				.img_change {
+					@include sc(0.5rem, #666);
+					p:nth-of-type(2) {
+						color: $blue;
+					}
+				}
+			}
+		}
+	}
+	.forget_tips {
+		@include sc(0.5rem, #eb2626);
+		padding: 0.4rem 0.6rem;
+		line-height: 0.5rem;
+	}
+	.forget_btn {
+		text-align: center;
+		margin: 0 0.5rem 1rem;
+		padding: 0.2rem 0;
+		background-color: #4cd964;
+		border: 1px solid #4cd964;
+		@include borderRadius(0.15rem);
+		span {
+			@include sc(0.7rem, #fff);
+		}
+	}
 }
 </style>
 

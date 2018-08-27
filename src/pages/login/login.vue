@@ -28,114 +28,112 @@
   </div>
 </template>
 <script>
-import HeadTop from "components/header/header"
-import {checkCode} from "common/js/util"
-import { getCheckCode, login } from "api/index"
+import HeadTop from 'components/header/header'
+import { checkCode } from 'common/js/util'
+import { getCheckCode, login } from 'api/index'
 import { mapMutations } from 'vuex'
 export default {
-  data() {
-    return {
-      user: {
-        username: '',
-        password: ''
-      },
-      userInfo: null, // 用户信息
-      loginWay: false, //登录方式，默认短信登录
-      checkCodeBase64: null, // 验证码图片
-      checkCodeNumber: null // 验证码number
-    };
-  },
-  created() {
-    this.getCheckCode()
-  },
-  methods: {
-    ...mapMutations([
-      'RECORD_USERINFO'
-    ]),
-    getCheckCode() {
-      getCheckCode(res => {
-        if (checkCode(res.status)) {
-          this.checkCodeBase64 = res.data.code
-        }
-      });
-    },
-    changeCodeImg() {
-      this.getCheckCode()
-    },
-    loginTo() {
-      let params = {
-        username: this.user.username,
-        password: this.user.password,
-        captcha_code: this.checkCodeNumber
-      }
-      login(params, res => {
-        if (checkCode(res.status)) {
-          this.userInfo = res.data
-          this.RECORD_USERINFO(res.data)
-          this.$router.push('/profile')
-        }
-      })
-    }
-  },
-  components: {
-    HeadTop
-  }
-};
+	data() {
+		return {
+			user: {
+				username: '',
+				password: '',
+			},
+			userInfo: null, // 用户信息
+			loginWay: false, //登录方式，默认短信登录
+			checkCodeBase64: null, // 验证码图片
+			checkCodeNumber: null, // 验证码number
+		}
+	},
+	created() {
+		this.getCheckCode()
+	},
+	methods: {
+		...mapMutations(['RECORD_USERINFO']),
+		getCheckCode() {
+			getCheckCode(res => {
+				if (checkCode(res.status)) {
+					this.checkCodeBase64 = res.data.code
+				}
+			})
+		},
+		changeCodeImg() {
+			this.getCheckCode()
+		},
+		loginTo() {
+			let params = {
+				username: this.user.username,
+				password: this.user.password,
+				captcha_code: this.checkCodeNumber,
+			}
+			login(params, res => {
+				if (checkCode(res.status)) {
+					this.userInfo = res.data
+					this.RECORD_USERINFO(res.data)
+					this.$router.push('/profile')
+				}
+			})
+		},
+	},
+	components: {
+		HeadTop,
+	},
+}
 </script>
 <style lang="scss" scoped>
-@import "~common/scss/mixin";
+@import '~common/scss/mixin';
 .login {
-  padding-top: 1.7rem;
-  p,
-  span,
-  input {
-    font-family: Helvetica Neue, Tahoma, Arial;
-  }
-  .form {
-    background-color: #fff;
-    .form_row {
-      @include fj;
-      padding: 0.6rem 0.8rem;
-      border-bottom: 1px solid #f1f1f1;
-      input {
-        @include sc(0.7rem, #666);
-      }
-      .check_code_container {
-        @include fj;
-        img {
-          @include wh(3.5rem, 1.5rem);
-          margin-right: 0.4rem;
-        }
-        .img_change {
-          @include sc(0.5rem, #666);
-          p:nth-of-type(2) {
-            color: $blue;
-          }
-        }
-      }
-    }
-  }
-  .login_tips {
-    @include sc(0.5rem, #eb2626);
-    padding: 0.4rem 0.6rem;
-    line-height: 0.5rem;
-  }
-  .login_btn {
-    text-align: center;
-    margin: 0 0.5rem 1rem;
-    padding: 0.2rem 0;
-    background-color: #4cd964;
-    border: 1px solid #4cd964;
-    @include borderRadius(0.15rem);
-    span {
-      @include sc(0.7rem, #fff);
-    }
-  }
-  .login_forget {
-    float: right;
-    @include sc(0.6rem, $blue);
-    margin-right: 0.7rem;
-  }
+	padding-top: 1.7rem;
+	p,
+	span,
+	input {
+		font-family: Helvetica Neue, Tahoma, Arial;
+	}
+	.form {
+		background-color: #fff;
+		.form_row {
+			@include fj;
+			padding: 0.6rem 0.8rem;
+			border-bottom: 1px solid #f1f1f1;
+			input {
+				@include sc(0.7rem, #666);
+			}
+			.check_code_container {
+				@include fj;
+				img {
+					@include wh(3.5rem, 1.5rem);
+					margin-right: 0.4rem;
+				}
+				.img_change {
+					@include sc(0.5rem, #666);
+					p:nth-of-type(2) {
+						color: $blue;
+					}
+				}
+			}
+		}
+	}
+	.login_tips {
+		@include sc(0.5rem, #eb2626);
+		padding: 0.4rem 0.6rem;
+		line-height: 0.5rem;
+	}
+	.login_btn {
+		text-align: center;
+		margin: 0 0.5rem 1rem;
+		padding: 0.2rem 0;
+		background-color: #4cd964;
+		border: 1px solid #4cd964;
+		@include borderRadius(0.15rem);
+		span {
+			@include sc(0.7rem, #fff);
+		}
+	}
+	.login_forget {
+		float: right;
+		@include sc(0.6rem, $blue);
+		margin-right: 0.7rem;
+	}
 }
 </style>
 

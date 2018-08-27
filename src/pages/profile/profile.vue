@@ -7,10 +7,11 @@
         <div class="number">
           <p class="username">{{username}}</p>
           <p class="msg">
-            <span class="phone_icon">                                
+            <span class="phone_icon">
               <svg class="icon-mobile" fill="#fff">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#mobile"></use>
-              </svg></span>
+              </svg>
+            </span>
             <span class="phone_no">{{phone}}</span>
             <!-- <span class="phone_num"></span> -->
           </p>
@@ -126,153 +127,151 @@
   </div>
 </template>
 <script>
-import HeadTop from "components/header/header"
+import HeadTop from 'components/header/header'
 import { mapState } from 'vuex'
 export default {
-  data() {
-    return {
-      username: '登录/注册',
-      phone: '未绑定手机号',
-      balance: 0, // 余额
-      discount: 0, // 优惠
-      point: 0, // 积分
-      avatar: 'common/images/avatar.png' // 头像
-    };
-  },
-  mounted() {
-    this.initUserInfo()
-  },
-  computed: {
-    ...mapState([
-      'userInfo'
-    ])
-  },
-  methods: {
-    initUserInfo() {
-      this.username = this.userInfo.username
-      this.avatar = this.userInfo.avatar
-      this.phone = this.userInfo.mobile ? this.userInfo.mobile : '未绑定手机号'
-      this.balance = this.userInfo.balance
-      this.discount = this.userInfo.gift_amount
-      this.point = this.userInfo.point
-    }
-  },
-  components: {
-    HeadTop
-  },
-  watch: {
-    userInfo: function () {
-      this.initUserInfo()
-    }
-  }
-};
+	data() {
+		return {
+			username: '登录/注册',
+			phone: '未绑定手机号',
+			balance: 0, // 余额
+			discount: 0, // 优惠
+			point: 0, // 积分
+			avatar: 'common/images/avatar.png', // 头像
+		}
+	},
+	mounted() {
+		this.initUserInfo()
+	},
+	computed: {
+		...mapState(['userInfo']),
+	},
+	methods: {
+		initUserInfo() {
+			this.username = this.userInfo.username
+			this.avatar = this.userInfo.avatar
+			this.phone = this.userInfo.mobile ? this.userInfo.mobile : '未绑定手机号'
+			this.balance = this.userInfo.balance
+			this.discount = this.userInfo.gift_amount
+			this.point = this.userInfo.point
+		},
+	},
+	components: {
+		HeadTop,
+	},
+	watch: {
+		userInfo: function() {
+			this.initUserInfo()
+		},
+	},
+}
 </script>
 <style lang="scss" scoped>
-@import "~common/scss/mixin";
+@import '~common/scss/mixin';
 .profile {
-  p,
-  span {
-    font-family: Helvetica Neue, Tahoma, Arial;
-  }
-  .profile_bar {
-    padding-top: 1.9rem;
-    .link {
-      display: flex;
-      align-items: center;
-      padding: 0.7rem;
-      background: $blue;
-      img {
-        display: inline-block;
-        @include wh(2rem, 2rem);
-        border-radius: 50%;
-      }
-      .number {
-        display: inline-block;
-        flex-grow: 1;
-        .username {
-          @include sc(0.7rem, #fff);
-        }
-        .msg {
-          @include sc(0.6rem, #fff);
-          .phone_icon {
-            display: inline-block;
-            vertical-align: middle;
-            svg{
-              @include wh(0.7rem, 0.7rem);
-            }
-          }
-          .phone_no {
-            @include sc(0.5rem, #fff);
-          }
-        }
-      }
-      .arrow {
-        @include wh(0.6rem, 0.6rem);
-        display: inline-flex;
-      }
-    }
-  }
-  .user_data {
-    .data_container {
-      display: flex;
-      .data_info_link {
-        flex: 1;
-        padding: 0.5rem 0;
-        text-align: center;
-        background-color: #fff;
-        &:nth-of-type(1),
-        &:nth-of-type(2) {
-          border-right: 1px solid #f1f1f1;
-        }
-        .balance_top {
-          @include sc(0.4rem, #666);
-          .money {
-            @include sc(0.8rem, #f90);
-          }
-          .discount {
-            @include sc(0.8rem, #ff5f3e);
-          }
-          .point {
-            @include sc(0.8rem, #6ac20b);
-          }
-        }
-        .balance_bottom {
-          padding-top: 0.5rem;
-          @include sc(0.5rem, #666);
-        }
-      }
-    }
-  }
-  .profile_other {
-    margin-top: 0.4rem;
-    background: #fff;
-    .welfare {
-      display: flex;
-      align-items: center;
-      padding-left: 0.7rem;
-      .welfare_icon {
-        @include wh(0.7rem, 0.7rem);
-        display: inline-flex;
-        svg {
-          @include wh(100%, 100%);
-        }
-      }
-      .welfare_detail {
-        width: 100%;
-        @include fj;
-        padding: 0.4rem 0.3rem;
-        border-bottom: 1px solid #f1f1f1;
-        @include sc(0.8rem, #333);
-        .txt_svg {
-          @include wh(0.5rem, 0.5rem);
-          display: block;
-          svg {
-            @include wh(100%, 100%);
-          }
-        }
-      }
-    }
-  }
+	p,
+	span {
+		font-family: Helvetica Neue, Tahoma, Arial;
+	}
+	.profile_bar {
+		padding-top: 1.9rem;
+		.link {
+			display: flex;
+			align-items: center;
+			padding: 0.7rem;
+			background: $blue;
+			img {
+				display: inline-block;
+				@include wh(2rem, 2rem);
+				border-radius: 50%;
+			}
+			.number {
+				display: inline-block;
+				flex-grow: 1;
+				.username {
+					@include sc(0.7rem, #fff);
+				}
+				.msg {
+					@include sc(0.6rem, #fff);
+					.phone_icon {
+						display: inline-block;
+						vertical-align: middle;
+						svg {
+							@include wh(0.7rem, 0.7rem);
+						}
+					}
+					.phone_no {
+						@include sc(0.5rem, #fff);
+					}
+				}
+			}
+			.arrow {
+				@include wh(0.6rem, 0.6rem);
+				display: inline-flex;
+			}
+		}
+	}
+	.user_data {
+		.data_container {
+			display: flex;
+			.data_info_link {
+				flex: 1;
+				padding: 0.5rem 0;
+				text-align: center;
+				background-color: #fff;
+				&:nth-of-type(1),
+				&:nth-of-type(2) {
+					border-right: 1px solid #f1f1f1;
+				}
+				.balance_top {
+					@include sc(0.4rem, #666);
+					.money {
+						@include sc(0.8rem, #f90);
+					}
+					.discount {
+						@include sc(0.8rem, #ff5f3e);
+					}
+					.point {
+						@include sc(0.8rem, #6ac20b);
+					}
+				}
+				.balance_bottom {
+					padding-top: 0.5rem;
+					@include sc(0.5rem, #666);
+				}
+			}
+		}
+	}
+	.profile_other {
+		margin-top: 0.4rem;
+		background: #fff;
+		.welfare {
+			display: flex;
+			align-items: center;
+			padding-left: 0.7rem;
+			.welfare_icon {
+				@include wh(0.7rem, 0.7rem);
+				display: inline-flex;
+				svg {
+					@include wh(100%, 100%);
+				}
+			}
+			.welfare_detail {
+				width: 100%;
+				@include fj;
+				padding: 0.4rem 0.3rem;
+				border-bottom: 1px solid #f1f1f1;
+				@include sc(0.8rem, #333);
+				.txt_svg {
+					@include wh(0.5rem, 0.5rem);
+					display: block;
+					svg {
+						@include wh(100%, 100%);
+					}
+				}
+			}
+		}
+	}
 }
 </style>
 
