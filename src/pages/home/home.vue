@@ -18,7 +18,9 @@
     <section class="hot_city_container">
       <h4 class="city_title">热门城市</h4>
       <ul class="city_list clear">
-        <li class="left" v-for="(item, index) in hotCity" :key="index">{{item.name}}</li>
+        <li class="left" v-for="(item, index) in hotCity" :key="index">
+          <router-link :to="'/city/'+item.id">{{item.name}}</router-link>
+        </li>
       </ul>
     </section>
     <section class="list_city_container">
@@ -27,7 +29,9 @@
           <span v-if="index === 0">（按字母顺序排列）</span>
         </h4>
         <ul class="city_list clear">
-          <li class="left ellipsis" v-for="(item, index) in letter" :key="index">{{item.name}}</li>
+          <li class="left ellipsis" v-for="(item, index) in letter" :key="index">
+            <router-link :to="'/city/'+item.id">{{item.name}}</router-link>
+          </li>
         </ul>
       </div>
     </section>
@@ -35,9 +39,9 @@
 </template>
 
 <script>
-import HeadTop from "components/header/header";
-import { getCity } from "api/index";
-import {checkCode} from "common/js/util";
+import HeadTop from "components/header/header"
+import { getCity } from "api/index"
+import {checkCode} from "common/js/util"
 export default {
   name: "Home",
   data() {
@@ -53,26 +57,26 @@ export default {
       let arr = {};
       for (let i = 65; i <= 90; i++) {
         if (this.groupCity[String.fromCharCode(i)]) {
-          arr[String.fromCharCode(i)] = this.groupCity[String.fromCharCode(i)];
+          arr[String.fromCharCode(i)] = this.groupCity[String.fromCharCode(i)]
         }
       }
-      return arr;
+      return arr
     }
   },
   created() {
     getCity("guess", res => {
       if (checkCode(res.status)) {
-        this.guessCity = res.data.name;
+        this.guessCity = res.data.name
       }
     });
     getCity("hot", res => {
       if (checkCode(res.status)) {
-        this.hotCity = res.data;
+        this.hotCity = res.data
       }
     });
     getCity("group", res => {
       if (checkCode(res.status)) {
-        this.groupCity = res.data;
+        this.groupCity = res.data
       }
     });
   },
@@ -120,12 +124,12 @@ export default {
   .hot_city_container {
     background-color: #fff;
     margin-bottom: 0.4rem;
-    li{
+    a{
       @include sc(0.7rem, $blue);
     }
   }
   .list_city_container {
-    li{
+    a{
       @include sc(0.6rem, #666);
     }
     .city_letter {
@@ -144,7 +148,6 @@ export default {
   .city_list {
     li {
       width: 25%;
-      // @include ct;
       height: 1.75rem;
       line-height: 1.75rem;
       text-align: center;

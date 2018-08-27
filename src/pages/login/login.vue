@@ -28,10 +28,10 @@
   </div>
 </template>
 <script>
-import HeadTop from "components/header/header";
-import {checkCode} from "common/js/util";
-import { getCheckCode, login } from "api/index";
-import { mapMutations } from 'vuex';
+import HeadTop from "components/header/header"
+import {checkCode} from "common/js/util"
+import { getCheckCode, login } from "api/index"
+import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -53,30 +53,26 @@ export default {
       'RECORD_USERINFO'
     ]),
     getCheckCode() {
-      var _this = this;
       getCheckCode(res => {
         if (checkCode(res.status)) {
-          _this.checkCodeBase64 = res.data.code
+          this.checkCodeBase64 = res.data.code
         }
       });
     },
     changeCodeImg() {
-      this.getCheckCode();
+      this.getCheckCode()
     },
     loginTo() {
-      console.log('login')
-      var _this = this
       let params = {
         username: this.user.username,
         password: this.user.password,
         captcha_code: this.checkCodeNumber
       }
       login(params, res => {
-        console.log(res)
         if (checkCode(res.status)) {
-          _this.userInfo = res.data
-          _this.RECORD_USERINFO(res.data)
-          _this.$router.push('/profile')
+          this.userInfo = res.data
+          this.RECORD_USERINFO(res.data)
+          this.$router.push('/profile')
         }
       })
     }

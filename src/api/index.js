@@ -42,3 +42,28 @@ export function login (data, callback) {
       callback(err)
     })
 }
+export function getCityById (id, callback) {
+  axios({
+    method: 'get',
+    url: 'api/v1/cities/' + id,
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+export function searchByKeyword (data, callback) {
+  axios({
+    method: 'get',
+    url: 'api/v1/pois',
+    params: data
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}

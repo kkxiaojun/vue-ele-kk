@@ -8,6 +8,8 @@ const Login = () => import('../pages/login/login')
 const Forget = () => import('../pages/forget/forget')
 const Profile = () => import('../pages/profile/profile')
 const City = () => import('../pages/city/city')
+const Msite = () => import('../pages/msite/msite')
+const Search = () => import('../pages/search/search')
 export default new Router({
   routes: [
     {
@@ -21,9 +23,19 @@ export default new Router({
       component: Home
     },
     {
-      path: '/city',
+      path: '/city/:id',
       name: 'city',
       component: City
+    },
+    {
+      path: '/msite',
+      name: 'msite',
+      component: Msite
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search
     },
     {
       path: '/login',

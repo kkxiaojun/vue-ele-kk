@@ -126,8 +126,8 @@
   </div>
 </template>
 <script>
-import HeadTop from "components/header/header";
-import { mapState } from 'vuex';
+import HeadTop from "components/header/header"
+import { mapState } from 'vuex'
 export default {
   data() {
     return {

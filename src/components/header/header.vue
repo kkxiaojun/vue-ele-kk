@@ -1,8 +1,6 @@
 <template>
-  <div>
-    <header class="head_top">
-      <slot name="logo"></slot>  
-      <!-- <span class="head_logo">guoguo</span> -->
+  <header class="head_top">
+      <slot name="logo"></slot>
       <section class="head_goback" v-if="goBack" @click="$router.go(-1)">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
           <polyline points="12,18 4,9 12,0" style="fill:none;stroke:rgb(255,255,255);stroke-width:2"/>
@@ -12,12 +10,20 @@
         <span class="title_text">{{headTitle}}</span>
       </section>
       <section v-if="!signUp">
-        <router-link to="/login" class="head_login" >登录|注册</router-link>
+        <router-link :to="userInfo ? '/profile' : '/login'" class="head_login" >
+          <svg class="user_avatar" v-if="userInfo">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#user"></use>
+          </svg>
+          <span class="login_text" v-else>登录|注册</span>
+        </router-link>
       </section>
-    </header>
-  </div>
+      <slot name="changeCity"></slot>
+      <slot name="search"></slot>
+      <slot name="msiteTitle"></slot>
+  </header>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "headtop",
   props: {
@@ -33,7 +39,12 @@ export default {
   data() {
     return {
       title: "header"
-    };
+    }
+  },
+  computed: {
+    ...mapState([
+      'userInfo'
+    ])
   },
   created() {}
 };
@@ -62,6 +73,13 @@ export default {
     right: 0.5rem;
     @include ct;
     @include sc(0.7rem, $fc);
+    .user_avatar{
+      fill: #fff;
+      @include wh(0.8rem, 0.8rem);
+    }
+    .login_text{
+      color: #fff;
+    }
   }
   .head_title{
     @include center;
