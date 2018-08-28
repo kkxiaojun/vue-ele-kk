@@ -54,6 +54,24 @@ export function getCityById (id, callback) {
       callback(err)
     })
 }
+export function getPosByGeohash (geohash, callback) {
+  axios({
+    method: 'get',
+    url: 'api/v2/pois/' + geohash,
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+export function getFoodType () {
+  return axios({
+    method: 'get',
+    url: 'api/v2/index_entry',
+  })
+}
 export function searchByKeyword (data, callback) {
   axios({
     method: 'get',
