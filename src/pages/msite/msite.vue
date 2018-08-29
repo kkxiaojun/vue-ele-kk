@@ -1,5 +1,6 @@
 <template>
   <div class="msite">
+		<div class="msite_content">
     <head-top :sign-up="false" :go-back="false">
       <router-link to="/search" class="msite_search" slot="search">
         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -28,8 +29,9 @@
       </div>
     </section>
 		<section class="shop_list_wrap">
-			<shop-list></shop-list>
+			<shop-list v-if="hasGetGeohash" :geohash="geohash"></shop-list>
 		</section>
+		</div>
     <foot-nav></foot-nav>
   </div>
 </template>
@@ -38,6 +40,7 @@ import HeadTop from 'components/header/header'
 import ShopList from 'components/common/shopList'
 import FootNav from 'components/footer/footer'
 import { getCity, getPosByGeohash, getFoodType } from 'api/index'
+import { mapMutations } from 'vuex'
 import { checkCode } from 'common/js/util'
 import '@/plugins/swiper/swiper.min.js'
 import '@/plugins/swiper/swiper.min.css'
@@ -63,11 +66,15 @@ export default {
 		} else {
 			this.geohash = routers
 		}
+		//保存geohash 到vuex
+		this.SAVE_GEOHASH(this.geohash);
 		// 根据geohash获取定位信息
 		getPosByGeohash(this.geohash, res => {
 			if (checkCode(res.status)) {
 				this.msiteTitle = res.data.name
 				this.hasGetGeohash = true
+				// 记录当前经度纬度
+    	  this.RECORD_ADDRESS(res.data);
 			}
 		})
 	},
@@ -92,7 +99,12 @@ export default {
 				})
 			})
 	},
-	methods: {},
+	methods: {
+		...mapMutations([
+			'SAVE_GEOHASH',
+			'RECORD_ADDRESS'
+		])
+	},
 	components: {
 		HeadTop,
 		ShopList,
@@ -113,7 +125,7 @@ export default {
 		@include center;
 		width: 60%;
 		.text {
-			@include sc(1rem, #fff);
+			@include sc(0.7rem, #fff);
 			display: inline-block;
 			width: 100%;
 		}
@@ -149,6 +161,7 @@ export default {
 	}
 	.shop_list_wrap {
 		margin-top: 0.6rem;
+		padding-bottom: 1.95rem;
 		background-color: #fff;
 	}
 }

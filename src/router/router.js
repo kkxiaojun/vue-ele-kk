@@ -10,6 +10,7 @@ const Profile = () => import('../pages/profile/profile')
 const City = () => import('../pages/city/city')
 const Msite = () => import('../pages/msite/msite')
 const Search = () => import('../pages/search/search')
+const Order = () => import('../pages/order/order')
 export default new Router({
   routes: [
     {
@@ -36,6 +37,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: Search
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: Order
     },
     {
       path: '/login',

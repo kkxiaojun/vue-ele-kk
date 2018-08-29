@@ -7,13 +7,16 @@
       <input type="text" placeholder="请输入地点...">
       <span class="search_btn">提交</span>
     </section>
+		<foot-nav></foot-nav>
   </div>
 </template>
 <script>
 import HeadTop from 'components/header/header'
+import FootNav from 'components/footer/footer'
 export default {
 	components: {
 		HeadTop,
+		FootNav
 	},
 }
 </script>

@@ -85,3 +85,47 @@ export function searchByKeyword (data, callback) {
       callback(err)
     })
 }
+/**
+ * 获取商铺列表
+ * @param  {json} data
+ * @param  {func} callback
+ */
+export function getShopList (data, callback) {
+	let config = {
+		latitude: data.latitude,
+		longitude: data.longitude
+	}
+  axios({
+    method: 'get',
+    url: 'api/shopping/restaurants',
+    params: config
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+
+export const shopList = (latitude, longitude, offset, restaurant_category_id = '', restaurant_category_ids = '', order_by = '', delivery_mode = '', support_ids = []) => {
+	let supportStr = '';
+	support_ids.forEach(item => {
+		if (item.status) {
+			supportStr += '&support_ids[]=' + item.id;
+		}
+	});
+	let data = {
+		latitude,
+		longitude,
+		offset,
+		limit: '20',
+		'extras[]': 'activities',
+		keyword: '',
+		restaurant_category_id,
+		'restaurant_category_ids[]': restaurant_category_ids,
+		order_by,
+		'delivery_mode[]': delivery_mode + supportStr
+	};
+	return fetch('/shopping/restaurants', data);
+};

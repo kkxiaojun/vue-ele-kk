@@ -124,10 +124,12 @@
         </div>
       </a>
     </section>
+		<foot-nav></foot-nav>
   </div>
 </template>
 <script>
 import HeadTop from 'components/header/header'
+import FootNav from 'components/footer/footer'
 import { mapState } from 'vuex'
 export default {
 	data() {
@@ -158,6 +160,7 @@ export default {
 	},
 	components: {
 		HeadTop,
+		FootNav
 	},
 	watch: {
 		userInfo: function() {
