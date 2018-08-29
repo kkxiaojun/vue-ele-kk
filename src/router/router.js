@@ -11,6 +11,7 @@ const City = () => import('../pages/city/city')
 const Msite = () => import('../pages/msite/msite')
 const Search = () => import('../pages/search/search')
 const Order = () => import('../pages/order/order')
+const Food = () => import('../pages/food/food')
 export default new Router({
   routes: [
     {
@@ -32,6 +33,11 @@ export default new Router({
       path: '/msite',
       name: 'msite',
       component: Msite
+    },
+    {
+      path: '/food',
+      name: 'food',
+      component: Food
     },
     {
       path: '/search',
