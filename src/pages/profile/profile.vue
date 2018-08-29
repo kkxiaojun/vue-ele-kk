@@ -124,7 +124,7 @@
         </div>
       </a>
     </section>
-		<foot-nav></foot-nav>
+    <foot-nav></foot-nav>
   </div>
 </template>
 <script>
@@ -160,7 +160,7 @@ export default {
 	},
 	components: {
 		HeadTop,
-		FootNav
+		FootNav,
 	},
 	watch: {
 		userInfo: function() {

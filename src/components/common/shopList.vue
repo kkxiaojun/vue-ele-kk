@@ -1,52 +1,52 @@
 <template>
   <div>
     <header class="shop_title">
-				<svg class="title_icon">
-	    		<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop"></use>
-	    	</svg>
-				<span class="title_txt">附近商家</span>
-	</header>
-	<ul class="shop_list">
-		<li class="each_shop" v-for="item in shopList" :key="item.id">
-					<section class="shop_img">
-						<img :src="imgBaseUrl + item.image_path" alt="商家">
-					</section>
-					<section class="shop_right">
-						<header class="shop_detail">
-							<span class="shop_name ellipsis">{{item.name}}</span>
-							<ul class="shop_detail_ul">
-								<li class="shop_detail_li" v-for="li in item.supports" :key="li.id">{{li.icon_name}}</li>
-							</ul>
-						</header>
-						<section class="score_num">
-							<section class="score_num_left">
-								<span class="point_txt">****</span>
-								<span class="point">{{item.rating}}</span>
-								<span class="num">月售{{item.recent_order_num}}单</span>
-							</section>
-							<section class="score_num_right">
-								<span class="send com_style" v-if="item.delivery_mode">{{item.delivery_mode.text}}</span>
-								<span class="time com_style">准时</span>
-							</section>
-						</section>
-						<section class="shop_distance">
-							<section class="shop_distance_left">
-								<span>¥{{item.float_minimum_order_amount}}起送</span>
-								<span>/</span>
-								<span>{{item.piecewise_agent_fee.tips}}</span>
-							</section>
-							<section class="shop_distance_right">
-							    <span v-if="Number(item.distance)">{{item.distance > 1000? (item.distance/1000).toFixed(2) + 'km': item.distance + 'm'}}
-								    <span>/</span>
-							    </span>
-								<span v-else>{{item.distance}}</span>
-								<span>/</span>
-								<span class="quick">{{item.order_lead_time}}</span>
-							</section>
-						</section>
-					</section>
-		</li>
-	</ul>
+      <svg class="title_icon">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop"></use>
+      </svg>
+      <span class="title_txt">附近商家</span>
+    </header>
+    <ul class="shop_list">
+      <li class="each_shop" v-for="item in shopList" :key="item.id">
+        <section class="shop_img">
+          <img :src="imgBaseUrl + item.image_path" alt="商家">
+        </section>
+        <section class="shop_right">
+          <header class="shop_detail">
+            <span class="shop_name ellipsis">{{item.name}}</span>
+            <ul class="shop_detail_ul">
+              <li class="shop_detail_li" v-for="li in item.supports" :key="li.id">{{li.icon_name}}</li>
+            </ul>
+          </header>
+          <section class="score_num">
+            <section class="score_num_left">
+              <span class="point_txt">****</span>
+              <span class="point">{{item.rating}}</span>
+              <span class="num">月售{{item.recent_order_num}}单</span>
+            </section>
+            <section class="score_num_right">
+              <span class="send com_style" v-if="item.delivery_mode">{{item.delivery_mode.text}}</span>
+              <span class="time com_style">准时</span>
+            </section>
+          </section>
+          <section class="shop_distance">
+            <section class="shop_distance_left">
+              <span>¥{{item.float_minimum_order_amount}}起送</span>
+              <span>/</span>
+              <span>{{item.piecewise_agent_fee.tips}}</span>
+            </section>
+            <section class="shop_distance_right">
+              <span v-if="Number(item.distance)">{{item.distance > 1000? (item.distance/1000).toFixed(2) + 'km': item.distance + 'm'}}
+                <span>/</span>
+              </span>
+              <span v-else>{{item.distance}}</span>
+              <span>/</span>
+              <span class="quick">{{item.order_lead_time}}</span>
+            </section>
+          </section>
+        </section>
+      </li>
+    </ul>
   </div>
 </template>
 <script>
@@ -54,33 +54,33 @@ import { getShopList } from 'api/index'
 import { mapState } from 'vuex'
 import { checkCode } from 'common/js/util'
 export default {
-  data() {
-	  return {
-		  imgBaseUrl: '//elm.cangdu.org/img/', // pic地址
-		  shopList: [] // 商品列表
-	  }
-  },
-  computed: {
-    ...mapState(['latitude', 'longitude'])
-  },
-  props: {
-	  geohash:{
-		  type: String,
-		  required: true
-	  }
-  },
-  created() {
-	  this.initData()
-  },
-  methods: {
-	  initData() {
-		  getShopList({latitude: this.latitude, longitude: this.longitude}, (res) => {
-			  if (checkCode(res.status)) {
-				  this.shopList = res.data
-			  }
-		  })
-	  }
-  }
+	data() {
+		return {
+			imgBaseUrl: '//elm.cangdu.org/img/', // pic地址
+			shopList: [], // 商品列表
+		}
+	},
+	computed: {
+		...mapState(['latitude', 'longitude']),
+	},
+	props: {
+		geohash: {
+			type: String,
+			required: true,
+		},
+	},
+	created() {
+		this.initData()
+	},
+	methods: {
+		initData() {
+			getShopList({ latitude: this.latitude, longitude: this.longitude }, res => {
+				if (checkCode(res.status)) {
+					this.shopList = res.data
+				}
+			})
+		},
+	},
 }
 </script>
 <style lang="scss" scoped>
@@ -134,49 +134,50 @@ export default {
 				.shop_detail_ul {
 					display: flex;
 					.shop_detail_li {
-					   border: 1px solid #ccc;
-					   margin-left: 0.07rem;
-					   @include borderRadius(0.1rem);
-					   @include sc(0.4rem, #666); 
+						border: 1px solid #ccc;
+						margin-left: 0.07rem;
+						@include borderRadius(0.1rem);
+						@include sc(0.4rem, #666);
 					}
 				}
 			}
-			.shop_distance, .score_num {
+			.shop_distance,
+			.score_num {
 				margin-top: 0.45rem;
 				@include fj;
 				@include sc(0.4rem, #999);
 			}
-			.score_num{
-			  .score_num_left{
-				  .point_txt{
-					 color: #ff6000;
-				  }
-				  .point{
-					  @include sc(0.4rem, #ff6000);
-				  }
-				  .num{
-					  @include sc(0.4rem, #666);
-				  }
-			  }
-			  .score_num_right{
-				font-size: 0.4rem;
-				.com_style{
-					border: 1px solid $blue;
-					@include borderRadius(0.09rem);
+			.score_num {
+				.score_num_left {
+					.point_txt {
+						color: #ff6000;
+					}
+					.point {
+						@include sc(0.4rem, #ff6000);
+					}
+					.num {
+						@include sc(0.4rem, #666);
+					}
 				}
-				.send{
-					color: #fff;
-					background: $blue;
+				.score_num_right {
+					font-size: 0.4rem;
+					.com_style {
+						border: 1px solid $blue;
+						@include borderRadius(0.09rem);
+					}
+					.send {
+						color: #fff;
+						background: $blue;
+					}
+					.time {
+						color: $blue;
+						background: #fff;
+					}
 				}
-				.time{
-					color: $blue;
-					background: #fff;
-				}
-			  }
 			}
-			.shop_distance{
+			.shop_distance {
 				opacity: 0.8;
-				.quick{
+				.quick {
 					color: $blue;
 				}
 			}

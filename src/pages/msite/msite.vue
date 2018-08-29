@@ -1,37 +1,37 @@
 <template>
   <div class="msite">
-		<div class="msite_content">
-    <head-top :sign-up="false" :go-back="false">
-      <router-link to="/search" class="msite_search" slot="search">
-        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
-          <circle cx="8" cy="8" r="7" stroke="rgb(255,255,255)" stroke-width="1" fill="none" />
-          <line x1="14" y1="14" x2="20" y2="20" style="stroke:rgb(255,255,255);stroke-width:2" />
-        </svg>
-      </router-link>
-      <router-link to="/home" class="msite_title" :title="msiteTitle" slot="msiteTitle">
-        <span class="text ellipsis">{{msiteTitle}}</span>
-      </router-link>
-    </head-top>
-    <section class="nav_swiper">
-      <div class="swiper-container">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide food_type" v-for="(item, index) in foodTypes" :key="index">
-						<router-link :to="{path: '/food', query: {geohash, title: foodItem.title}}" v-for="foodItem in item" :key="foodItem.id" class="food_list">
-	            <figure>
-	            	<img :src="imgBaseUrl + foodItem.image_url">
-	            	<figcaption>{{foodItem.title}}</figcaption>
-	            </figure>
-	          </router-link>
-					</div>
+    <div class="msite_content">
+      <head-top :sign-up="false" :go-back="false">
+        <router-link to="/search" class="msite_search" slot="search">
+          <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
+            <circle cx="8" cy="8" r="7" stroke="rgb(255,255,255)" stroke-width="1" fill="none" />
+            <line x1="14" y1="14" x2="20" y2="20" style="stroke:rgb(255,255,255);stroke-width:2" />
+          </svg>
+        </router-link>
+        <router-link to="/home" class="msite_title" :title="msiteTitle" slot="msiteTitle">
+          <span class="text ellipsis">{{msiteTitle}}</span>
+        </router-link>
+      </head-top>
+      <section class="nav_swiper">
+        <div class="swiper-container">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide food_type" v-for="(item, index) in foodTypes" :key="index">
+              <router-link :to="{path: '/food', query: {geohash, title: foodItem.title}}" v-for="foodItem in item" :key="foodItem.id" class="food_list">
+                <figure>
+                  <img :src="imgBaseUrl + foodItem.image_url">
+                  <figcaption>{{foodItem.title}}</figcaption>
+                </figure>
+              </router-link>
+            </div>
+          </div>
+          <!-- 如果需要分页器 -->
+          <div class="swiper-pagination"></div>
         </div>
-        <!-- 如果需要分页器 -->
-        <div class="swiper-pagination"></div>
-      </div>
-    </section>
-		<section class="shop_list_wrap">
-			<shop-list v-if="hasGetGeohash" :geohash="geohash"></shop-list>
-		</section>
-		</div>
+      </section>
+      <section class="shop_list_wrap">
+        <shop-list v-if="hasGetGeohash" :geohash="geohash"></shop-list>
+      </section>
+    </div>
     <foot-nav></foot-nav>
   </div>
 </template>
@@ -67,14 +67,14 @@ export default {
 			this.geohash = routers
 		}
 		//保存geohash 到vuex
-		this.SAVE_GEOHASH(this.geohash);
+		this.SAVE_GEOHASH(this.geohash)
 		// 根据geohash获取定位信息
 		getPosByGeohash(this.geohash, res => {
 			if (checkCode(res.status)) {
 				this.msiteTitle = res.data.name
 				this.hasGetGeohash = true
 				// 记录当前经度纬度
-    	  this.RECORD_ADDRESS(res.data);
+				this.RECORD_ADDRESS(res.data)
 			}
 		})
 	},
@@ -100,10 +100,7 @@ export default {
 			})
 	},
 	methods: {
-		...mapMutations([
-			'SAVE_GEOHASH',
-			'RECORD_ADDRESS'
-		])
+		...mapMutations(['SAVE_GEOHASH', 'RECORD_ADDRESS']),
 	},
 	components: {
 		HeadTop,
