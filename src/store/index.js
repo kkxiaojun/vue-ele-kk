@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import action from './action'
+import actions from './action'
 import getters from './getters'
 import mutations from './mutations'
 import createLogger from 'vuex/dist/logger'
@@ -13,7 +13,7 @@ const state = {
 export default new Vuex.Store({
   state,
   getters,
-  action,
   mutations,
+  actions,
   plugins: process.env.NODE_ENV !== 'production' ? [createLogger()] : []
 })

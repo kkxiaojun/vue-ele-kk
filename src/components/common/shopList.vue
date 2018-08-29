@@ -9,7 +9,7 @@
     <ul class="shop_list">
       <li class="each_shop" v-for="item in shopList" :key="item.id">
         <section class="shop_img">
-          <img :src="imgBaseUrl + item.image_path" alt="商家">
+          <img :src="imgBaseUrl + item.image_path">
         </section>
         <section class="shop_right">
           <header class="shop_detail">

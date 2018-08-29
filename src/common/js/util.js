@@ -27,7 +27,7 @@ export const setStore = (name, content) => {
  */
 export const getStore = (name) => {
   if (!name) return
-  window.localStorage.getItem(name)
+  return window.localStorage.getItem(name)
 }
 /**
  * remove the localStorage

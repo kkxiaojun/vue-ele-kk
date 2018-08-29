@@ -121,6 +121,7 @@ export default {
 	.msite_title {
 		@include center;
 		width: 60%;
+    text-align: center;
 		.text {
 			@include sc(0.7rem, #fff);
 			display: inline-block;

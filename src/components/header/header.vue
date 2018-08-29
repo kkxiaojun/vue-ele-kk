@@ -23,7 +23,7 @@
   </header>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
   name: "headtop",
   props: {
@@ -46,7 +46,13 @@ export default {
       'userInfo'
     ])
   },
-  created() {}
+  mounted() {
+    // 获取用户信息
+    this.getUserInfo()
+  },
+  methods: {
+    ...mapActions(['getUserInfo'])
+  }
 };
 </script>
 <style lang="scss" scoped>

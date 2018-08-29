@@ -70,7 +70,7 @@ export default {
 				if (checkCode(res.status)) {
 					this.userInfo = res.data
 					this.RECORD_USERINFO(res.data)
-					this.$router.push('/profile')
+					this.$router.push('/home')
 				}
 			})
 		},
