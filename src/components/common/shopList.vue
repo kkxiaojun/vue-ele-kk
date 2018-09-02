@@ -1,11 +1,5 @@
 <template>
   <div>
-    <header class="shop_title">
-      <svg class="title_icon">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop"></use>
-      </svg>
-      <span class="title_txt">附近商家</span>
-    </header>
     <ul class="shop_list">
       <li class="each_shop" v-for="item in shopList" :key="item.id">
         <section class="shop_img">
@@ -58,6 +52,7 @@ export default {
 		return {
 			imgBaseUrl: '//elm.cangdu.org/img/', // pic地址
 			shopList: [], // 商品列表
+			offset: 0, // 批次加载店铺列表，每次加载20个 limit = 20
 		}
 	},
 	computed: {
@@ -68,19 +63,48 @@ export default {
 			type: String,
 			required: true,
 		},
+		restaurantCategoryId: {
+			type: [String, Number]
+		},
+		restaurantCategoryIds: {
+			type: [String, Number]
+		},
+		sortByType: {
+			type: String
+		}
 	},
 	created() {
 		this.initData()
 	},
 	methods: {
 		initData() {
-			getShopList({ latitude: this.latitude, longitude: this.longitude }, res => {
+			getShopList(this.latitude, this.longitude, this.offset, this.restaurantCategoryId)
+			 .then(res => {
 				if (checkCode(res.status)) {
-					this.shopList = res.data
+					// 引用数据，深复制。考虑到本地模拟数据是引用类型，所以返回一个新的数组
+					this.shopList = [...res.data]
 				}
-			})
+			 })
 		},
+		listenCategoryIds() {
+			getShopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType)
+			 .then(res => {
+				if (checkCode(res.status)) {
+					// 引用数据，深复制。考虑到本地模拟数据是引用类型，所以返回一个新的数组
+					this.shopList = [...res.data]
+				}
+			 })
+			// let res = await shopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType, this.deliveryMode, this.supportIds);
+		}
 	},
+	watch:{
+		restaurantCategoryIds: function () {
+			this.listenCategoryIds()
+		},
+		sortByType: function () {
+			this.listenCategoryIds()
+		}
+	}
 }
 </script>
 <style lang="scss" scoped>

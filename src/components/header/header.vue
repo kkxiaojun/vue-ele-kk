@@ -61,6 +61,7 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
+  z-index: 100;
   @include wh(100%, 1.95rem);
   z-index: 100;
   background-color: $blue;

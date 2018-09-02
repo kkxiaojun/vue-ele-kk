@@ -1,60 +1,262 @@
 <template>
   <div class="food">
-    <head-top :go-back="true" :sign-up="true">
-      <p class="search_title" slot="search">food</p>
+    <head-top :head-title="headTitle" :go-back="true" :sign-up="true">
     </head-top>
 		<!-- 分类 -->
 		<section class="sort_container">
-			<div class="sort_item">
-				<div class="sort_title">
+			<div class="sort_item" :class="{'choose_type': orderTab == 'food'}">
+				<div class="sort_title" @click="chooseType('food')">
 					<div class="sort_title_border">
-				    <span class="title_txt">食堂早餐</span>
-					  <span class="title_icon">></span>
+				    <span class="title_txt" :class="{'choose_type':orderTab == 'food'}">{{navTitle}}</span>
+						<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" version="1.1" class="sort_icon">
+			    		<polygon points="0,3 10,3 5,8"/>
+			    	</svg>
 					</div>
 				</div>
-				<div class="sort_content">
+				<transition name="showlist" v-show="category">
+				<div class="sort_content" v-show="orderTab == 'food'">
 					<ul class="content_nav">
-						<li class="content_nav_li">
-							<div class="all_shop">全部商家</div>
-							<div class="num">
-								<span>111</span>
+						<li class="content_nav_li" v-for="(item, index) in category" :key="index" :class="{'content_nav_li_active': item.id == restaurant_category_id}"
+						@click="changeCategory(item, index)" >
+							<div class="all_shop">
+								<img v-if="index" :src="getImgPath(item.image_url)">
+								<span class="title">{{item.name}}</span>
 							</div>
-						</li>
-						<li class="content_nav_li">
-							<div class="all_shop">早餐便当</div>
-							<div class="num">
-								<span>111</span>
+							<div class="all_shop_detail">
+								<span class="num">{{item.count}}</span>
+								<svg v-if="index" data-v-6cc1fce6="" width="8" height="8" xmlns="http://www.w3.org/2000/svg" version="1.1" class="category_arrow"><path data-v-6cc1fce6="" d="M0 0 L6 4 L0 8" stroke="#bbb" stroke-width="1" fill="none"></path></svg>
 							</div>
 						</li>
 					</ul>
 					<div class="content_right">
-						fsfsf
+						<ul class="content_right_ul">
+							<li class="content_right_li" v-for="(detail, index) in categoryChild" :key="index" @click="getFoodList(detail.name, detail.id)">
+								<span class="left_txt">{{detail.name}}</span>
+								<span class="right_num">{{detail.count}}</span>
+							</li>
+						</ul>
 					</div>
 				</div>
+				</transition>
 			</div>
-			<div class="sort_item">
-				<div class="sort_title">食堂早餐</div>
+			<div class="sort_item" :class="{'choose_type': orderTab == 'sort'}">
+				<div class="sort_title" @click="chooseType('sort')">
+					<div class="sort_title_border">
+				    <span class="title_txt">排序</span>
+						<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" version="1.1" class="sort_icon">
+			    		<polygon points="0,3 10,3 5,8"/>
+			    	</svg>
+					</div>
+				</div>
+				<transition name="showlist">
+					<div class="sort_content sort_by_type" v-show="orderTab == 'sort'">
+						<ul class="sort_list_container" @click="chooseSortType($event)">
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#default"></use>
+								</svg>
+	    						<p data="0" :class="{sort_select: sortByType == 0}">
+	    							<span>智能排序</span>
+	    							<svg v-if="sortByType == 0">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+	    						</p>
+	    					</li>
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#distance"></use>
+								</svg>
+	    						<p data="5" :class="{sort_select: sortByType == 5}">
+	    							<span>距离最近</span>
+	    							<svg v-if="sortByType == 5">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+	    						</p>
+	    					</li>
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#hot"></use>
+								</svg>
+	    						<p data="6" :class="{sort_select: sortByType == 6}">
+	    							<span>销量最高</span>
+	    							<svg v-if="sortByType == 6">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+	    						</p>
+	    					</li>
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#price"></use>
+								</svg>
+	    						<p data="1" :class="{sort_select: sortByType == 1}">
+	    							<span>起送价最低</span>
+	    							<svg v-if="sortByType == 1">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+								</p>
+	    					</li>
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#speed"></use>
+								</svg>
+	    						<p data="2" :class="{sort_select: sortByType == 2}">
+	    							<span>配送速度最快</span>
+	    							<svg v-if="sortByType == 2">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+	    						</p>
+	    					</li>
+	    					<li class="sort_list_li">
+	    						<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#rating"></use>
+								</svg>
+	    						<p data="3" :class="{sort_select: sortByType == 3}">
+	    							<span>评分最高</span>
+	    							<svg v-if="sortByType == 3">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+	    						</p>
+	    					</li>
+	    				</ul>
+					</div>
+				</transition>
 			</div>
-			<div class="sort_item">
-				<div class="sort_title">食堂早餐</div>
+			<div class="sort_item" :class="{'choose_type': orderTab == 'filter'}">
+				<div class="sort_title" @click="chooseType('filter')">
+					<div class="sort_title_border">
+				    <span class="title_txt">筛选</span>
+						<svg width="10" height="10" xmlns="http://www.w3.org/2000/svg" version="1.1" class="sort_icon">
+			    		<polygon points="0,3 10,3 5,8"/>
+			    	</svg>
+					</div>
+				</div>
+				<div class="sort_content"></div>
 			</div>
 		</section>
-		<!-- <section class="shop_list_wrap">
-		  <shop-list :geohash="geohash"></shop-list>
-		</section> -->
+		<transition name="showcover">
+    	<div class="back_cover" v-show="orderTab"></div>
+    </transition>
+		<section class="shop_list_wrap">
+		  <shop-list :geohash="geohash" :restaurant-category-id="restaurant_category_id" :restaurant-category-ids="restaurant_category_ids"
+			:sortByType="sortByType" ></shop-list>
+		</section>
   </div>
 </template>
 <script>
 import HeadTop from 'components/header/header'
 import ShopList from 'components/common/shopList'
+import { getPosByGeohash, getFoodCategory } from 'api/index'
+import { checkCode } from 'common/js/util'
+import { getImgPath } from 'common/js/mixin'
+import { mapState, mapMutations } from 'vuex'
 export default {
 	data() {
 		return {
+			headTitle: '', // msite title
+			navTitle: '', // tab的title
 			geohash: '', // 经纬度合集
+			orderTab: '', // 选择筛选的tab
+			restaurant_category_id: '', // 食品类型id值
+			restaurant_category_ids: '', // 食品分类id值
+			category: [], // food分类数据
+			categoryChild: [], // 选择后右侧的子数据
+			sortByType: '', // 排序方式
 		}
 	},
 	created: function() {
-		this.geohash = this.$route.query.geohash
+		this.initData()
+	},
+	computed: {
+		...mapState(['latitude', 'longitude']),
+	},
+	mixins: [getImgPath],
+	methods: {
+		...mapMutations(['RECORD_ADDRESS']),
+		initData: function() {
+			//获取从msite页面传递过来的参数
+			let query = this.$route.query
+			this.geohash = query.geohash
+			this.headTitle = query.title
+			this.navTitle = this.headTitle
+			this.restaurant_category_id = query.restaurant_category_id
+			//防止刷新页面时，vuex状态丢失
+			if (!this.latitude) {
+				//获取位置信息
+				getPosByGeohash(this.geohash, res => {
+					// 记录当前经度纬度进入vuex
+					if (checkCode(res.status)) {
+						this.RECORD_ADDRESS(res)
+					}
+				})
+			}
+			//获取category分类左侧数据
+			getFoodCategory({ latitude: this.latitude, longitude: this.longitude }, res => {
+				if (checkCode(res.status)) {
+					this.category = res.data
+					//初始化时定位当前category分类左侧默认选择项，在右侧展示出其sub_categories列表
+					this.category.forEach(item => {
+						if (this.restaurant_category_id == item.id) {
+							this.categoryChild = item.sub_categories
+						}
+					})
+				}
+			})
+			// //获取筛选列表的配送方式
+			// this.Delivery = await foodDelivery(this.latitude, this.longitude);
+			// //获取筛选列表的商铺活动
+			// this.Activity = await foodActivity(this.latitude, this.longitude);
+			// //记录support_ids的状态，默认不选中，点击状态取反，status为true时为选中状态
+			// this.Activity.forEach((item, index) => {
+			//   this.support_ids[index] = { status: false, id: item.id };
+			// });
+		},
+		chooseType(type) {
+			if (this.orderTab !== type) {
+				this.orderTab = type
+				//food选项中头部标题发生改变，需要特殊处理
+				if (type == 'food') {
+					this.navTitle = '分类'
+				} else {
+					//将foodTitle 和 headTitle 进行同步
+					this.navTitle = this.headTitle
+				}
+			} else {
+				//再次点击相同选项时收回列表
+				this.orderTab = ''
+				if (type == 'food') {
+					//将foodTitle 和 headTitle 进行同步
+					this.navTitle = this.headTitle
+				}
+			}
+		},
+		changeCategory(item, index) {
+			//第一个选项 -- 默认获取选所有数据
+			if (index === 0) {
+				this.restaurant_category_ids = null
+				this.orderTab = ''
+				//不是第一个选项时，右侧展示其子级sub_categories的列表
+			} else {
+				this.restaurant_category_id = item.id
+				this.categoryChild = this.category[index].sub_categories
+			}
+		},
+		getFoodList(name, id) {
+			this.restaurant_category_ids = id
+			this.orderTab = ''
+			this.foodTitle = this.headTitle = name
+		},
+		chooseSortType(event) {
+			//点击某个排序方式，获取事件对象的data值，并根据获取的值重新获取数据渲染
+			let node
+			// 如果点击的是 span 中的文字，则需要获取到 span 的父标签 p
+			if (event.target.nodeName.toUpperCase() !== 'P') {
+				node = event.target.parentNode
+			} else {
+				node = event.target
+			}
+			this.sortByType = node.getAttribute('data')
+			this.orderTab = ''
+		},
 	},
 	components: {
 		HeadTop,
@@ -65,60 +267,165 @@ export default {
 <style lang="scss" scoped>
 @import '~common/scss/mixin';
 .food {
-	.search_title {
-		@include center;
-		color: #fff;
-	}
-	.sort_container{
+	.sort_container {
 		position: fixed;
 		top: 1.95rem;
 		right: 0;
 		width: 100%;
 		display: flex;
+		z-index: 11;
 		@include fj(center);
 		background-color: #fff;
-		.sort_item{
+		.sort_item {
 			width: 33.33%;
 			height: 1.6rem;
 			line-height: 1.6rem;
 			text-align: center;
-			@include sc(0.55rem, #444);
-			.sort_title{
+			@include sc(0.55rem, #333);
+			.sort_title {
 				height: 1.2rem;
 				line-height: 1.2rem;
 				padding-top: 0.25rem;
-				.sort_title_border{
+				.sort_title_border {
 					border-right: 0.015rem solid $bc;
-					.title_txt{
-						
+					.sort_icon {
+						transition: all 0.3s;
+						fill: #666;
 					}
-					.title_icon{}
 				}
 			}
-			.sort_content{
+			.sort_content {
 				position: absolute;
 				top: 1.6rem;
 				width: 100%;
 				display: flex;
 				background-color: #fff;
-				.content_nav{
+				.content_nav {
 					flex: 1;
+					height: 16rem;
+					overflow-y: auto;
 					background-color: #f1f1f1;
-					.content_nav_li{
+					.content_nav_li {
 						@include fj;
 						padding: 0 0.5rem;
+						.all_shop {
+							display: flex;
+							align-items: center;
+							img {
+								display: inline-block;
+								@include wh(0.8rem, 0.8rem);
+								margin-right: 0.25rem;
+							}
+							.title {
+								@include sc(0.5rem, #666);
+							}
+						}
+						.all_shop_detail {
+							.num {
+								@include sc(0.4rem, #fff);
+								background-color: #ccc;
+								@include borderRadius(0.3rem);
+								padding: 0 0.2rem;
+							}
+						}
+						&.content_nav_li_active {
+							background-color: #fff;
+						}
 					}
 				}
-				.content_right{
+				.content_right {
 					flex: 1;
+					height: 16rem;
+					overflow-y: auto;
+					.content_right_ul {
+						padding: 0 0.5rem;
+					}
+					.content_right_li {
+						@include fj;
+						border-bottom: 0.015rem solid #e4e4e4;
+						&:last-child {
+							border-bottom: none;
+						}
+						.left_txt,
+						.right_num {
+							color: #666;
+						}
+					}
+				}
+			}
+			.sort_list_container {
+				width: 100%;
+				.sort_list_li {
+					height: 2.5rem;
+					display: flex;
+					align-items: center;
+					svg {
+						@include wh(0.7rem, 0.7rem);
+						margin: 0 0.3rem 0 0.8rem;
+					}
+					p {
+						line-height: 2.5rem;
+						flex: auto;
+						text-align: left;
+						text-indent: 0.25rem;
+						border-bottom: 0.025rem solid $bc;
+						@include fj;
+						align-items: center;
+						span {
+							color: #666;
+						}
+					}
+					.sort_select {
+						span {
+							color: $blue;
+						}
+					}
 				}
 			}
 		}
+		.choose_type {
+			.sort_title {
+				span {
+					color: $blue;
+				}
+			}
+			.sort_icon {
+				transition: all 0.3s;
+				transform: rotate(180deg);
+				fill: $blue;
+			}
+		}
+		.sort_by_type {
+			left: 0;
+		}
+		.showlist-enter-active,
+		.showlist-leave-active {
+			transition: all 0.3s;
+			transform: translateY(0);
+		}
+		.showlist-enter,
+		.showlist-leave-active {
+			opacity: 0;
+			transform: translateY(-100%);
+		}
 	}
 	.shop_list_wrap {
-		margin-top: 0.6rem;
-		padding-bottom: 1.95rem;
+		margin-top: 3.6rem;
 		background-color: #fff;
+	}
+	.showcover-enter-active,
+	.showcover-leave-active {
+		transition: opacity 0.4s;
+	}
+	.showcover-enter,
+	.showcover-leave-active {
+		opacity: 0;
+	}
+	.back_cover {
+		position: fixed;
+		@include wh(100%, 100%);
+		z-index: 10;
+		background-color: rgba(0, 0, 0, 0.3);
 	}
 }
 </style>

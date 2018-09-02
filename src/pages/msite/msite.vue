@@ -16,7 +16,7 @@
         <div class="swiper-container">
           <div class="swiper-wrapper">
             <div class="swiper-slide food_type" v-for="(item, index) in foodTypes" :key="index">
-              <router-link :to="{path: '/food', query: {geohash, title: foodItem.title}}" v-for="foodItem in item" :key="foodItem.id" class="food_list">
+              <router-link :to="{path: '/food', query: {geohash, title: foodItem.title, restaurant_category_id: getCategoryId(foodItem.link)}}" v-for="foodItem in item" :key="foodItem.id" class="food_list">
                 <figure>
                   <img :src="imgBaseUrl + foodItem.image_url">
                   <figcaption>{{foodItem.title}}</figcaption>
@@ -29,6 +29,12 @@
         </div>
       </section>
       <section class="shop_list_wrap">
+				<header class="shop_title">
+          <svg class="title_icon">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop"></use>
+          </svg>
+        <span class="title_txt">附近商家</span>
+        </header>
         <shop-list v-if="hasGetGeohash" :geohash="geohash"></shop-list>
       </section>
     </div>
@@ -101,6 +107,15 @@ export default {
 	},
 	methods: {
 		...mapMutations(['SAVE_GEOHASH', 'RECORD_ADDRESS']),
+		// 解码url地址，求restaurant_category_id值
+		getCategoryId(url) {
+			let urlData = decodeURIComponent(url.split('=')[1].replace('&target_name', ''))
+			if (/restaurant_category_id/gi.test(urlData)) {
+				return JSON.parse(urlData).restaurant_category_id.id
+			} else {
+				return ''
+			}
+		},
 	},
 	components: {
 		HeadTop,
@@ -111,6 +126,19 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import '~common/scss/mixin';
+.shop_title {
+	display: flex;
+	align-items: center;
+	padding: 0.5rem 0 0.4rem 0.5rem;
+	.title_icon {
+		@include wh(0.9rem, 0.9rem);
+		fill: #999;
+	}
+	.title_txt {
+		@include sc(0.9rem, #999);
+		padding-left: 0.35rem;
+	}
+}
 .msite {
 	padding-top: 2rem;
 	.msite_search {
@@ -121,7 +149,7 @@ export default {
 	.msite_title {
 		@include center;
 		width: 60%;
-    text-align: center;
+		text-align: center;
 		.text {
 			@include sc(0.7rem, #fff);
 			display: inline-block;
