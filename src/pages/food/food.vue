@@ -130,12 +130,51 @@
 			    	</svg>
 					</div>
 				</div>
-				<div class="sort_content"></div>
+				<div class="sort_content sort_by_type">
+					<div class="filter_container">
+					<section class="filter_item">
+						<header>
+							配送方式
+						</header>
+						<ul class="filter_ul">
+							<li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+														<li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+						</ul>
+					</section>
+					<section class="filter_item">
+						<header>商家属性（可多选）</header>
+						<ul class="filter_ul">
+							<li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+						    <li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+							<li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+							<li class="filter_li">
+								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
+								<span>蜂鸟配送</span>
+							</li>
+						</ul>
+					</section>
+					</div>
+				</div>
 			</div>
 		</section>
 		<transition name="showcover">
-    	<div class="back_cover" v-show="orderTab"></div>
-    </transition>
+    	  <div class="back_cover" v-show="orderTab"></div>
+        </transition>
 		<section class="shop_list_wrap">
 		  <shop-list :geohash="geohash" :restaurant-category-id="restaurant_category_id" :restaurant-category-ids="restaurant_category_ids"
 			:sortByType="sortByType" ></shop-list>
@@ -378,6 +417,40 @@ export default {
 					.sort_select {
 						span {
 							color: $blue;
+						}
+					}
+				}
+			}
+			.filter_container {
+				width: 100%;
+				height: 10rem;
+				text-align: left;
+				padding: 0 0.5rem;
+				line-height: 1.2rem;
+				.filter_item {
+					header {
+						height: 1.5rem;
+						line-height: 1.5rem;
+					}
+					.filter_ul {
+						display: flex;
+						flex-wrap: wrap;
+						line-height: 1rem;
+						.filter_li {
+							display: flex;
+							align-items: center;
+							@include wh(4.6rem, 1.5rem);
+							margin-right: 0.3rem;
+							margin-bottom: 0.3rem;
+							border: 0.03rem solid $bc;
+							@include borderRadius(0.15rem);
+							svg {
+								width: 0.8rem;
+								height: 0.8rem;
+							}
+							span {
+								padding-right: 0.3rem;
+							}
 						}
 					}
 				}
