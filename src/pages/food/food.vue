@@ -2,8 +2,9 @@
   <div class="food">
     <head-top :head-title="headTitle" :go-back="true" :sign-up="true">
     </head-top>
-		<!-- 分类 -->
+		<!-- 选择 -->
 		<section class="sort_container">
+			<!-- food -->
 			<div class="sort_item" :class="{'choose_type': orderTab == 'food'}">
 				<div class="sort_title" @click="chooseType('food')">
 					<div class="sort_title_border">
@@ -39,6 +40,7 @@
 				</div>
 				</transition>
 			</div>
+			<!-- 排序 -->
 			<div class="sort_item" :class="{'choose_type': orderTab == 'sort'}">
 				<div class="sort_title" @click="chooseType('sort')">
 					<div class="sort_title_border">
@@ -121,6 +123,7 @@
 					</div>
 				</transition>
 			</div>
+			<!-- 筛选 -->
 			<div class="sort_item" :class="{'choose_type': orderTab == 'filter'}">
 				<div class="sort_title" @click="chooseType('filter')">
 					<div class="sort_title_border">
@@ -130,61 +133,56 @@
 			    	</svg>
 					</div>
 				</div>
-				<div class="sort_content sort_by_type">
+				<transition name="showlist">
+				<div class="sort_content sort_by_type" v-show="orderTab == 'filter'">
 					<div class="filter_container">
 					<section class="filter_item">
 						<header>
 							配送方式
 						</header>
 						<ul class="filter_ul">
-							<li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
-							</li>
-														<li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
+							<li class="filter_li" v-for="(item, index) in Delivery" :key="index" @click="selectDeliveryMode(item.id)">
+								<svg :style="{opacity: (item.id == 0)&&(delivery_mode !== 0)? 0: 1}"><use xmlns:xlink="http://www.w3.org/1999/xlink" :xlink:href="delivery_mode == item.id? '#selected':'#fengniao'"></use></svg>
+								<span :class="{selected_filter: delivery_mode == item.id}">{{item.text}}</span>
 							</li>
 						</ul>
 					</section>
 					<section class="filter_item">
 						<header>商家属性（可多选）</header>
 						<ul class="filter_ul">
-							<li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
-							</li>
-						    <li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
-							</li>
-							<li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
-							</li>
-							<li class="filter_li">
-								<svg data-v-6cc1fce6="" style="opacity: 1;"><use data-v-6cc1fce6="" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fengniao"></use></svg>
-								<span>蜂鸟配送</span>
+							<li class="filter_li" v-for="(item, index) in Activity" :key="index" @click="selectSupportIds(index, item.id)">
+								<svg v-show="support_ids[index].status" class="activity_svg">
+										<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#selected"></use>
+									</svg>
+								<span class="filter_icon" :style="{color: '#' + item.icon_color, borderColor: '#' + item.icon_color}" v-show="!support_ids[index].status">{{item.icon_name}}</span>
+								<span :class="{selected_filter: support_ids[index].status}">{{item.name}}</span>
 							</li>
 						</ul>
 					</section>
+					<footer class="confirm_filter">
+	    				<div class="clear_all filter_button_style" @click="clearSelect">清空</div>
+	    				<div class="confirm_select filter_button_style" @click="confirmSelectFun">确定<span v-show="filterNum">({{filterNum}})</span></div>
+	    			</footer>
 					</div>
 				</div>
+				</transition>	
 			</div>
 		</section>
+		<!-- 透明框 -->
 		<transition name="showcover">
     	  <div class="back_cover" v-show="orderTab"></div>
         </transition>
+		<!-- shoplist -->
 		<section class="shop_list_wrap">
 		  <shop-list :geohash="geohash" :restaurant-category-id="restaurant_category_id" :restaurant-category-ids="restaurant_category_ids"
-			:sortByType="sortByType" ></shop-list>
+			:sort-by-type="sortByType" :delivery-mode="delivery_mode" :support-ids="support_ids" :confirm-select="confirmStatus"></shop-list>
 		</section>
   </div>
 </template>
 <script>
 import HeadTop from 'components/header/header'
 import ShopList from 'components/common/shopList'
-import { getPosByGeohash, getFoodCategory } from 'api/index'
+import { getPosByGeohash, getFoodCategory, getFoodDelivery, getFoodActivity } from 'api/index'
 import { checkCode } from 'common/js/util'
 import { getImgPath } from 'common/js/mixin'
 import { mapState, mapMutations } from 'vuex'
@@ -200,6 +198,12 @@ export default {
 			category: [], // food分类数据
 			categoryChild: [], // 选择后右侧的子数据
 			sortByType: '', // 排序方式
+			Delivery: '', // 配送方式
+			delivery_mode: '', // 选中的配送方式
+			Activity: '', // 商家活动列表
+			support_ids: [], // 选中的商铺活动列表
+			filterNum: 0, // 所选中的所有样式的集合
+			confirmStatus: false, // 确认按钮
 		}
 	},
 	created: function() {
@@ -240,15 +244,24 @@ export default {
 					})
 				}
 			})
-			// //获取筛选列表的配送方式
-			// this.Delivery = await foodDelivery(this.latitude, this.longitude);
-			// //获取筛选列表的商铺活动
-			// this.Activity = await foodActivity(this.latitude, this.longitude);
-			// //记录support_ids的状态，默认不选中，点击状态取反，status为true时为选中状态
-			// this.Activity.forEach((item, index) => {
-			//   this.support_ids[index] = { status: false, id: item.id };
-			// });
+			// 获取筛选列表的配送方式
+			getFoodDelivery(this.latitude, this.longitude, res => {
+				if (checkCode(res.status)) {
+					this.Delivery = res.data
+				}
+			})
+			//获取筛选列表的商铺活动
+			getFoodActivity(this.latitude, this.longitude, res => {
+				if (checkCode(res.status)) {
+					this.Activity = res.data
+					// 记录support_ids的状态，默认不选中，点击状态取反，status为true时为选中状态
+					this.Activity.forEach((item, index) => {
+						this.support_ids[index] = { status: false, id: item.id }
+					})
+				}
+			})
 		},
+		// 切换头部的3个tab
 		chooseType(type) {
 			if (this.orderTab !== type) {
 				this.orderTab = type
@@ -268,6 +281,7 @@ export default {
 				}
 			}
 		},
+		// food change
 		changeCategory(item, index) {
 			//第一个选项 -- 默认获取选所有数据
 			if (index === 0) {
@@ -279,11 +293,13 @@ export default {
 				this.categoryChild = this.category[index].sub_categories
 			}
 		},
+		// 根据选择的food，返回shoplist列表
 		getFoodList(name, id) {
 			this.restaurant_category_ids = id
 			this.orderTab = ''
 			this.foodTitle = this.headTitle = name
 		},
+		// 选择排序方式
 		chooseSortType(event) {
 			//点击某个排序方式，获取事件对象的data值，并根据获取的值重新获取数据渲染
 			let node
@@ -294,6 +310,48 @@ export default {
 				node = event.target
 			}
 			this.sortByType = node.getAttribute('data')
+			this.orderTab = ''
+		},
+		//筛选选项中的配送方式选择
+		selectDeliveryMode(id) {
+			//delivery_mode为空时，选中当前项，并且filterNum加一
+			if (this.delivery_mode == null) {
+				this.filterNum++
+				this.delivery_mode = id
+				//delivery_mode为当前已有值时，清空所选项，并且filterNum减一
+			} else if (this.delivery_mode == id) {
+				this.filterNum--
+				this.delivery_mode = null
+				//delivery_mode已有值且不等于当前选择值，则赋值delivery_mode为当前所选id
+			} else {
+				this.delivery_mode = id
+			}
+		},
+		//点击商家活动，状态取反
+		selectSupportIds(index, id) {
+			//数组替换新的值
+			this.support_ids.splice(index, 1, {
+				status: !this.support_ids[index].status,
+				id,
+			})
+			//重新计算filterNum的个数
+			this.filterNum = this.delivery_mode == null ? 0 : 1
+			this.support_ids.forEach(item => {
+				if (item.status) {
+					this.filterNum++
+				}
+			})
+		},
+		//只有点击清空按钮才清空数据，否则一直保持原有状态
+		clearSelect() {
+			this.support_ids.map(item => (item.status = false))
+			this.filterNum = 0
+			this.delivery_mode = null
+		},
+		//点击确认时，将需要筛选的id值传递给子组件，并且收回列表
+		confirmSelectFun() {
+			//状态改变时，因为子组件进行了监听，会重新获取数据进行筛选
+			this.confirmStatus = !this.confirmStatus
 			this.orderTab = ''
 		},
 	},
@@ -322,9 +380,12 @@ export default {
 			text-align: center;
 			@include sc(0.55rem, #333);
 			.sort_title {
-				height: 1.2rem;
+				position: relative;
+				z-index: 15;
+				@include wh(100%, 100%);
 				line-height: 1.2rem;
 				padding-top: 0.25rem;
+				background-color: #fff;
 				.sort_title_border {
 					border-right: 0.015rem solid $bc;
 					.sort_icon {
@@ -338,6 +399,7 @@ export default {
 				top: 1.6rem;
 				width: 100%;
 				display: flex;
+				border-top: 0.03rem solid $bc;
 				background-color: #fff;
 				.content_nav {
 					flex: 1;
@@ -423,11 +485,11 @@ export default {
 			}
 			.filter_container {
 				width: 100%;
-				height: 10rem;
+				height: 14rem;
 				text-align: left;
-				padding: 0 0.5rem;
 				line-height: 1.2rem;
 				.filter_item {
+					padding: 0 0.5rem;
 					header {
 						height: 1.5rem;
 						line-height: 1.5rem;
@@ -440,8 +502,8 @@ export default {
 							display: flex;
 							align-items: center;
 							@include wh(4.6rem, 1.5rem);
-							margin-right: 0.3rem;
-							margin-bottom: 0.3rem;
+							margin: 0 0.3rem 0.3rem 0;
+							padding-left: 0.3rem;
 							border: 0.03rem solid $bc;
 							@include borderRadius(0.15rem);
 							svg {
@@ -451,9 +513,48 @@ export default {
 							span {
 								padding-right: 0.3rem;
 							}
+							.selected_filter {
+								color: $blue;
+							}
 						}
 					}
 				}
+				.confirm_filter {
+					display: flex;
+					background-color: #f1f1f1;
+					width: 100%;
+					padding: 0.3rem 0.5rem;
+					text-align: center;
+					.filter_button_style {
+						@include wh(50%, 1.8rem);
+						font-size: 0.8rem;
+						line-height: 1.8rem;
+						border-radius: 0.2rem;
+					}
+					.clear_all {
+						background-color: #fff;
+						margin-right: 0.5rem;
+						border: 0.025rem solid #fff;
+					}
+					.confirm_select {
+						background-color: #56d176;
+						color: #fff;
+						border: 0.025rem solid #56d176;
+						span {
+							color: #fff;
+						}
+					}
+				}
+			}
+			.showlist-enter-active,
+			.showlist-leave-active {
+				transition: all 0.3s;
+				transform: translateY(0);
+			}
+			.showlist-enter,
+			.showlist-leave-active {
+				opacity: 0;
+				transform: translateY(-100%);
 			}
 		}
 		.choose_type {
@@ -470,16 +571,6 @@ export default {
 		}
 		.sort_by_type {
 			left: 0;
-		}
-		.showlist-enter-active,
-		.showlist-leave-active {
-			transition: all 0.3s;
-			transform: translateY(0);
-		}
-		.showlist-enter,
-		.showlist-leave-active {
-			opacity: 0;
-			transform: translateY(-100%);
 		}
 	}
 	.shop_list_wrap {

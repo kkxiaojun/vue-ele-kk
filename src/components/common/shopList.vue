@@ -59,18 +59,34 @@ export default {
 		...mapState(['latitude', 'longitude']),
 	},
 	props: {
+		// 经纬度合集
 		geohash: {
 			type: String,
 			required: true,
 		},
+		// 分类选择列表
 		restaurantCategoryId: {
 			type: [String, Number]
 		},
+		// 分类选择列表-> 具体food
 		restaurantCategoryIds: {
 			type: [String, Number]
 		},
+		// 排序方式
 		sortByType: {
 			type: String
+		},
+		// 筛选方式
+		deliveryMode: {
+			type: String
+		},
+		// 选中的商铺活动列表
+		supportIds: {
+			type: Array
+		},
+		// 确认按钮
+		confirmSelect:{
+			type: Boolean
 		}
 	},
 	created() {
@@ -87,7 +103,7 @@ export default {
 			 })
 		},
 		listenCategoryIds() {
-			getShopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType)
+			getShopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType , this.deliveryMode, this.supportIds)
 			 .then(res => {
 				if (checkCode(res.status)) {
 					// 引用数据，深复制。考虑到本地模拟数据是引用类型，所以返回一个新的数组
@@ -102,6 +118,9 @@ export default {
 			this.listenCategoryIds()
 		},
 		sortByType: function () {
+			this.listenCategoryIds()
+		},
+		confirmSelect: function () {
 			this.listenCategoryIds()
 		}
 	}

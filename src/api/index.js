@@ -165,6 +165,11 @@ export function getShopList(latitude, longitude, offset, restaurant_category_id 
     params: data
   })
 }
+/**
+ * 获取food页的分类选择
+ * @param {Json} data 
+ * @param {func} callback 
+ */
 export function getFoodCategory(data, callback) {
   let config = {
     latitude: data.latitude,
@@ -174,6 +179,52 @@ export function getFoodCategory(data, callback) {
     method: 'get',
     url: 'api/shopping/v2/restaurant/category',
     params: config
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+/**
+ * 获取food页的配送方式
+ * @param {String} latitude 
+ * @param {String} longitude 
+ * @param {func} callback 
+ */
+export function getFoodDelivery (latitude, longitude, callback) {
+  axios({
+    method: 'get',
+    url: 'api/shopping/v1/restaurants/delivery_modes',
+    params: {
+      latitude: latitude,
+      longitude: longitude,
+      kw: ''
+    }
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+/**
+ * 获取food页的活动列表
+ * @param {String} latitude 
+ * @param {String} longitude 
+ * @param {func} callback 
+ */
+export function getFoodActivity (latitude, longitude, callback) {
+  axios({
+    method: 'get',
+    url: 'api/shopping/v1/restaurants/activity_attributes',
+    params: {
+      latitude: latitude,
+      longitude: longitude,
+      kw: ''
+    }
   })
     .then(res => {
       callback(res)
