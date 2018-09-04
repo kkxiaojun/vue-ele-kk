@@ -12,6 +12,7 @@ const Msite = () => import('../pages/msite/msite')
 const Search = () => import('../pages/search/search')
 const Order = () => import('../pages/order/order')
 const Food = () => import('../pages/food/food')
+const Shop = () => import('../pages/shop/shop')
 export default new Router({
   routes: [
     {
@@ -38,6 +39,11 @@ export default new Router({
       path: '/food',
       name: 'food',
       component: Food
+    },
+    {
+      path: '/shop',
+      name: 'shop',
+      component: Shop
     },
     {
       path: '/search',

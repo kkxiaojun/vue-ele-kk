@@ -1,7 +1,7 @@
 <template>
   <div>
     <ul class="shop_list">
-      <li class="each_shop" v-for="item in shopList" :key="item.id">
+      <li class="each_shop" v-for="item in shopList" :key="item.id" @click="goShop(item)">
         <section class="shop_img">
           <img :src="imgBaseUrl + item.image_path">
         </section>
@@ -78,7 +78,7 @@ export default {
 		},
 		// 筛选方式
 		deliveryMode: {
-			type: String
+			type: [Number, String]
 		},
 		// 选中的商铺活动列表
 		supportIds: {
@@ -89,7 +89,7 @@ export default {
 			type: Boolean
 		}
 	},
-	created() {
+	mounted() {
 		this.initData()
 	},
 	methods: {
@@ -111,7 +111,10 @@ export default {
 				}
 			 })
 			// let res = await shopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType, this.deliveryMode, this.supportIds);
-		}
+    },
+    goShop(item) {
+      this.$router.push('/shop');
+    }
 	},
 	watch:{
 		restaurantCategoryIds: function () {

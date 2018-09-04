@@ -157,11 +157,11 @@ export function getShopList(latitude, longitude, offset, restaurant_category_id 
     restaurant_category_id,
     'restaurant_category_ids[]': restaurant_category_ids,
     order_by,
-    'delivery_mode[]': delivery_mode + supportStr
+    'delivery_mode[]': delivery_mode
   };
   return axios({
     method: 'get',
-    url: 'api/shopping/restaurants',
+    url: 'api/shopping/restaurants?' + supportStr,
     params: data
   })
 }
