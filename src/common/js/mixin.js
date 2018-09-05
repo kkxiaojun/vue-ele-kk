@@ -1,4 +1,4 @@
-// mixins额作用：定义公共的方法和计算属性，方便不同page调用
+// mixins作用：定义公共的方法和计算属性，方便不同page调用
 export const getImgPath = {
 	methods: {
 		//传递过来的图片地址需要处理后才能正常使用

@@ -233,3 +233,26 @@ export function getFoodActivity (latitude, longitude, callback) {
       callback(err)
     })
 }
+/**
+ * 获取商铺详情
+ * @param {Number} shopId 
+ * @param {String} latitude 
+ * @param {String} longitude 
+ * @param {func} callback 
+ */
+export function getShop(shopId, latitude, longitude, callback) {
+  axios({
+    method: 'get',
+    url: 'api/shopping/restaurant/' + shopId,
+    params: {
+      latitude: latitude,
+      longitude: longitude + '&extras[]=activities&extras[]=album&extras[]=license&extras[]=identification&extras[]=statistics'
+    }
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
