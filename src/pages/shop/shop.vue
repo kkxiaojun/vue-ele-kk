@@ -28,29 +28,62 @@
       </section>
     </section>
     <nav class="shop_nav">
-			<div class="nav_tab" @click="shopNavType = 'shop'">
-				<span :class="{nav_active: shopNavType == 'shop'}">商品</span>
+		<div class="nav_tab" @click="shopNavType = 'shop'">
+			<span :class="{nav_active: shopNavType == 'shop'}">商品</span>
+		</div>
+		<div class="nav_tab" @click="shopNavType = 'evaluation'">
+			<span :class="{nav_active: shopNavType == 'evaluation'}">评价</span>
+		</div>
+	</nav>
+	<section class="shop_content">
+		<nav class="content_nav">
+			<div class="left_nav_tab" :class="{left_nav_active: shopNavLeft == 'hot'}" @click="shopNavLeft = 'hot'">
+				<span>热销榜</span>
 			</div>
-			<div class="nav_tab" @click="shopNavType = 'evaluation'">
-				<span :class="{nav_active: shopNavType == 'evaluation'}">评价</span>
+			<div class="left_nav_tab" :class="{left_nav_active: shopNavLeft == 'discount'}" @click="shopNavLeft = 'discount'">
+				<span>优惠</span>
 			</div>
 		</nav>
-		<section class="shop_conainer">
-      <section class="shop_content">
-				<nav class="content_nav">
-					<div class="left_nav_tab" @click="shopNavLeft = 'hot'">
-						<span :class="{left_nav_active: shopNavLeft == 'hot'}">热销榜</span>
-					</div>
-					<div class="left_nav_tab" @click="shopNavLeft = 'discount'">
-						<span :class="{left_nav_active: shopNavLeft == 'discount'}">优惠</span>
-					</div>
-				</nav>
-				<section class="content_right">
-					222
-				</section>
+		<section class="content_right">
+			<section class="food_header">
+				<span class="h_hot">热销榜</span>
+				<span class="h_center">大家喜欢吃，才是真好吃</span>
+				<span class="h_right">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="4" viewBox="0 0 20 4">
+						<path id="ico_menu" class="cls-1" d="M1043,322a2,2,0,1,1-2,2A2,2,0,0,1,1043,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1051,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1059,322Z" transform="translate(-1041 -322)"></path>
+					</svg>
+				</span>
 			</section>
-      <section class="shop_cart">111</section>
+			<ul class="food_body">
+				<li class="each_food">
+					<section class="food_img">
+						<img src="" alt="pic">
+					</section>
+					<section class="food_right">
+						<header class="food_detail">
+							<span class="food_name ellipsis">点名是否是</span>
+							<ul class="food_detail_ul">
+								<li class="food_detail_li">123</li>
+							</ul>
+						</header>
+						<p class="food_num">hhhhhh</p>
+						<p class="food_num">ggggg</p>
+						<p class="food_num"><span class="special">hohohoh</span></p>
+						<section class="food_price">
+							<section class="price_left">
+								<span>¥</span>
+								<span>22</span>
+							</section>
+							<span class="price_add">
+								<span>+</span>
+							</span>
+						</section>
+					</section>
+				</li>
+			</ul>
 		</section>
+	</section>
+	<section class="shop_cart">111</section>
   </div>
 </template>
 <script>
@@ -198,27 +231,113 @@ export default {
 		}
 	}
 }
-.shop_conainer {
-	.shop_content {
-		display: flex;
-		.content_nav {
-			.left_nav_tab{
-				border-left: 1rem solid #F5F5F5;
-				&.left_nav_active{
-					background: #fff;
-					border-color: #3190e8;
+.shop_content {
+	display: flex;
+	.content_nav {
+		.left_nav_tab {
+			border-left: 0.13rem solid #f5f5f5;
+			border-bottom: 0.01rem solid#ededed;
+			padding: 1rem 0.15rem;
+			text-align: center;
+			@include sc(0.6rem, #666);
+			&.left_nav_active {
+				background: #fff;
+				border-left-color: #3190e8;
+			}
+		}
+		&:first-child {
+			width: 4rem;
+		}
+	}
+	.content_right {
+		flex: 4;
+		position: relative;
+		.food_header{
+			@include fj;
+			align-items: center;
+			padding: 0.4rem;
+			.h_hot{
+				@include sc(0.8rem, #666);
+			}
+			.h_center{
+				@include sc(0.6rem, #999);
+			}
+			.h_right{
+				@include sc(0.6rem, #999);
+				svg{
+					fill: #999;
+					vertical-align: middle;
 				}
 			}
-			&:first-child{
-				width: 4rem;
+		}
+		.food_body{
+			background-color: #fff;
+			.each_food {
+				display: flex;
+				padding: 0.2rem 0.5rem;
+				.food_img {
+					padding-right: 0.5rem;
+					img {
+						display: block;
+						@include borderRadius(0.2rem);
+						@include wh(2.3rem, 2.3rem);
+					}
+				}
+				.food_right {
+					display: flex;
+					flex-direction: column;
+					flex: auto;
+					.food_detail {
+						@include fj;
+						align-items: center;
+						.food_name {
+							width: 80%;
+							@include sc(0.8rem, #333);
+						}
+						.food_detail_ul {
+							display: flex;
+							.food_detail_li {
+								height: 0.5rem;
+								line-height: 0.5rem;
+								border: 1px solid rgb(240, 115, 115);
+								margin-left: 0.07rem;
+								@include borderRadius(0.4rem);
+								@include sc(0.4rem, rgb(240, 115, 115));
+							}
+						}
+					}
+					.food_num {
+						@include fj;
+						@include sc(0.6rem, #999);
+						margin-top: 0.3rem;
+						.special{
+							color: #f07373;
+							border: 0.05rem solid #f07373;
+							@include borderRadius(0.3rem);
+						}
+					}
+					.food_price {
+						@include fj;
+						.price_left{
+							span:nth-of-type(1) {
+								@include sc(0.7rem, #f07373); 
+							}
+							span:nth-of-type(2){
+								@include sc(0.8rem, #f07373); 
+							}
+						}
+						.price_add{}
+					}
+				}
 			}
 		}
-		.content_tight {
-
-		}
 	}
-	.shop_cart {
-	}
+}
+.shop_cart {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 </style>
 
