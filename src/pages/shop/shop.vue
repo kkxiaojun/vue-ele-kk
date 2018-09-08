@@ -83,7 +83,12 @@
 			</ul>
 		</section>
 	</section>
-	<section class="shop_cart">111</section>
+	<section class="shop_cart">
+		<section></section>
+		<section></section>
+		<section></section>
+		<section></section>
+	</section>
   </div>
 </template>
 <script>
