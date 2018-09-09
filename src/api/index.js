@@ -256,3 +256,23 @@ export function getShop(shopId, latitude, longitude, callback) {
       callback(err)
     })
 }
+/**
+ * 获取shopmenu
+ * @param {String} shopId 
+ * @param {func} callback 
+ */
+export function getShopMenu(shopId, callback) {
+  axios({
+    method: 'get',
+    url: 'api/shopping/v2/menu',
+    params: {
+      restaurant_id: shopId
+    }
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}

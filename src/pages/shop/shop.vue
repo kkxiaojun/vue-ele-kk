@@ -3,7 +3,7 @@
     <section class="shop_top">
       <img class="shop_top_cover" :src="imgBaseUrl + shopDetail.image_path">
       <section class="shop_top_container">
-				<section class="top_head">
+		<section class="top_head">
         	<img class="shop_left" :src="imgBaseUrl + shopDetail.image_path">
         	<section class="shop_middle">
           	<header class="shop_title">xiaoguo</header>
@@ -13,18 +13,18 @@
         	<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" version="1.1" class="right_arrow" >
           	<path d="M0 0 L8 7 L0 14"  stroke="#fff" stroke-width="1" fill="none"/>
         	</svg>
-				</section>
-				<section class="top_footer">
-					<p class="footer_discount">
-						<span>减</span>
-						<span>满减优惠</span>
-						<span>(app专享)</span>
-					</p>
-					<p>1个活动</p>
-					<svg class="footer_arrow">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-left"></use>
-          </svg>
-				</section>
+		</section>
+		<section class="top_footer">
+			<p class="footer_discount">
+				<span>减</span>
+				<span>满减优惠</span>
+				<span>(app专享)</span>
+			</p>
+			<p>1个活动</p>
+			<svg class="footer_arrow">
+				<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-left"></use>
+			</svg>
+		</section>
       </section>
     </section>
     <nav class="shop_nav">
@@ -37,48 +37,63 @@
 	</nav>
 	<section class="shop_content">
 		<nav class="content_nav">
-			<div class="left_nav_tab" :class="{left_nav_active: shopNavLeft == 'hot'}" @click="shopNavLeft = 'hot'">
-				<span>热销榜</span>
-			</div>
-			<div class="left_nav_tab" :class="{left_nav_active: shopNavLeft == 'discount'}" @click="shopNavLeft = 'discount'">
-				<span>优惠</span>
+			<div class="left_nav_tab" v-for="(item, index) in menuList" :key="item.id" :class="{left_nav_active: index == curMenu}" @click="choseMenu(index)">
+				<img :src="getImgPath(item.icon_url)" class="nav_img">
+				<span class="ellipsis">{{item.name}}</span>
 			</div>
 		</nav>
 		<section class="content_right">
-			<section class="food_header">
-				<span class="h_hot">热销榜</span>
-				<span class="h_center">大家喜欢吃，才是真好吃</span>
-				<span class="h_right">
-					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="4" viewBox="0 0 20 4">
-						<path id="ico_menu" class="cls-1" d="M1043,322a2,2,0,1,1-2,2A2,2,0,0,1,1043,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1051,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1059,322Z" transform="translate(-1041 -322)"></path>
-					</svg>
-				</span>
-			</section>
-			<ul class="food_body">
-				<li class="each_food">
-					<section class="food_img">
-						<img src="" alt="pic">
+			<ul>
+				<li v-for="(item, index) in menuList" :key="index">
+					<section class="food_header">
+						<span class="h_hot">{{item.name}}</span>
+						<span class="h_center">{{item.description}}</span>
+						<span class="h_right">
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="4" viewBox="0 0 20 4">
+								<path id="ico_menu" class="cls-1" d="M1043,322a2,2,0,1,1-2,2A2,2,0,0,1,1043,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1051,322Zm8,0a2,2,0,1,1-2,2A2,2,0,0,1,1059,322Z" transform="translate(-1041 -322)"></path>
+							</svg>
+						</span>
 					</section>
-					<section class="food_right">
-						<header class="food_detail">
-							<span class="food_name ellipsis">点名是否是</span>
-							<ul class="food_detail_ul">
-								<li class="food_detail_li">123</li>
-							</ul>
-						</header>
-						<p class="food_num">hhhhhh</p>
-						<p class="food_num">ggggg</p>
-						<p class="food_num"><span class="special">hohohoh</span></p>
-						<section class="food_price">
-							<section class="price_left">
-								<span>¥</span>
-								<span>22</span>
+					<ul class="food_body">
+						<li class="each_food" v-for="(food, foodIndex) in item.foods" :key="foodIndex">
+							<section class="food_img">
+								<img :src="imgBaseUrl + food.image_path" alt="pic">
 							</section>
-							<span class="price_add">
-								<span>+</span>
-							</span>
-						</section>
-					</section>
+							<section class="food_right">
+								<header class="food_detail">
+									<span class="food_name ellipsis">{{food.name}}</span>
+									<ul class="food_detail_ul" v-if="food.attributes.length">
+										<li class="food_detail_li" v-for="(attr, attrIndex) in food.attributes" :key="attrIndex" :style="{color: '#' + attr.icon_color,borderColor:'#' +attr.icon_color}" :class="{attribute_new: attr.icon_name == '新'}">
+											<p :style="{color: attr.icon_name == '新'? '#fff' : '#' + attr.icon_color}">{{attr.icon_name == '新'? '新品':attr.icon_name}}</p>
+										</li>
+									</ul>
+								</header>
+								<p class="food_num">{{food.description}}</p>
+								<p class="food_num">月售{{food.month_sales}},好评率{{food.satisfy_rate}}%</p>
+								<p class="food_num" v-if="food.activity"><span class="special">{{food.activity.image_text}}</span></p>
+								<section class="food_price">
+									<section class="price_left">
+										<span>¥</span>
+										<span>{{food.specfoods[0].price}}</span>
+										<span>起</span>
+									</section>
+									<span class="price_add">
+										<span class="reduce">
+											<svg>
+												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
+											</svg>
+										</span>
+										<span class="num">1</span>
+										<span class="add">
+											<svg class="add_icon">
+												<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
+											</svg>
+										</span>
+									</span>
+								</section>
+							</section>
+						</li>
+					</ul>
 				</li>
 			</ul>
 		</section>
@@ -92,10 +107,11 @@
   </div>
 </template>
 <script>
-import { getShop, getPosByGeohash } from 'api/index'
+import { getShop, getPosByGeohash, getShopMenu } from 'api/index'
 import { mapState } from 'vuex'
 import { checkCode } from 'common/js/util'
 import { imgBaseUrl } from 'config/env'
+import { getImgPath } from 'common/js/mixin'
 export default {
 	data() {
 		return {
@@ -104,6 +120,8 @@ export default {
 			shopDetail: '', //商铺详情
 			shopNavType: 'shop', // 商铺的商品与评价切换
 			shopNavLeft: 'hot', // 商铺的热销榜与优惠切换
+			menuList: [], // 食品列表
+			curMenu: 0, // 默认为0
 			imgBaseUrl,
 		}
 	},
@@ -118,6 +136,7 @@ export default {
 	computed: {
 		...mapState(['latitude', 'longitude']),
 	},
+	mixins: [getImgPath],
 	methods: {
 		initData() {
 			//防止刷新页面时，vuex状态丢失
@@ -136,12 +155,29 @@ export default {
 					this.shopDetail = res.data
 				}
 			})
+			getShopMenu(this.shopId, res => {
+				if (checkCode(res.status)) {
+					this.menuList = res.data
+				}
+			})
+		},
+		choseMenu(index) {
+			this.curMenu = index
 		},
 	},
 }
 </script>
 <style lang="scss" scoped>
 @import '~common/scss/mixin';
+.shop {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
 .shop_top {
 	@include fj;
 	position: relative;
@@ -166,6 +202,7 @@ export default {
 			align-items: center;
 			.shop_left {
 				@include wh(3rem, 3rem);
+				margin-right: 0.2rem;
 			}
 			.shop_middle {
 				display: flex;
@@ -191,7 +228,7 @@ export default {
 			position: relative;
 			@include fj;
 			align-items: center;
-			margin-top: 0.3rem;
+			margin: 0.3rem 0;
 			padding-right: 1.3rem;
 			font-size: 0.6rem;
 			p {
@@ -237,9 +274,14 @@ export default {
 	}
 }
 .shop_content {
+	flex: 1;
 	display: flex;
+	overflow-y: hidden;
 	.content_nav {
+		overflow: auto;
 		.left_nav_tab {
+			display: flex;
+			align-items: center;
 			border-left: 0.13rem solid #f5f5f5;
 			border-bottom: 0.01rem solid#ededed;
 			padding: 1rem 0.15rem;
@@ -249,6 +291,10 @@ export default {
 				background: #fff;
 				border-left-color: #3190e8;
 			}
+			.nav_img {
+				@include wh(0.7rem, 0.7rem);
+				margin-right: 0.2rem;
+			}
 		}
 		&:first-child {
 			width: 4rem;
@@ -257,25 +303,26 @@ export default {
 	.content_right {
 		flex: 4;
 		position: relative;
-		.food_header{
+		overflow-y: auto;
+		.food_header {
 			@include fj;
 			align-items: center;
 			padding: 0.4rem;
-			.h_hot{
+			.h_hot {
 				@include sc(0.8rem, #666);
 			}
-			.h_center{
+			.h_center {
 				@include sc(0.6rem, #999);
 			}
-			.h_right{
+			.h_right {
 				@include sc(0.6rem, #999);
-				svg{
+				svg {
 					fill: #999;
 					vertical-align: middle;
 				}
 			}
 		}
-		.food_body{
+		.food_body {
 			background-color: #fff;
 			.each_food {
 				display: flex;
@@ -315,7 +362,7 @@ export default {
 						@include fj;
 						@include sc(0.6rem, #999);
 						margin-top: 0.3rem;
-						.special{
+						.special {
 							color: #f07373;
 							border: 0.05rem solid #f07373;
 							@include borderRadius(0.3rem);
@@ -323,15 +370,38 @@ export default {
 					}
 					.food_price {
 						@include fj;
-						.price_left{
+						.price_left {
 							span:nth-of-type(1) {
-								@include sc(0.7rem, #f07373); 
+								@include sc(0.7rem, #f07373);
 							}
-							span:nth-of-type(2){
-								@include sc(0.8rem, #f07373); 
+							span:nth-of-type(2) {
+								@include sc(0.8rem, #f07373);
+							}
+							span:nth-of-type(3) {
+								@include sc(0.5rem, #999);
 							}
 						}
-						.price_add{}
+						.price_add {
+							display: flex;
+							align-items: center;
+							.reduce {
+								svg {
+									@include wh(0.9rem, 0.9rem);
+									fill: #3190e8;
+								}
+							}
+							.num {
+								@include sc(0.6rem, #999);
+								text-align: center;
+								min-width: 1rem;
+							}
+							.add {
+								svg {
+									@include wh(0.9rem, 0.9rem);
+									fill: #3190e8;
+								}
+							}
+						}
 					}
 				}
 			}
