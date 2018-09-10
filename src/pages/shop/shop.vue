@@ -35,7 +35,7 @@
 			<span :class="{nav_active: shopNavType == 'evaluation'}">评价</span>
 		</div>
 	</nav>
-	<section class="shop_content">
+	<section class="shop_content" v-if="shopNavType == 'shop'">
 		<nav class="content_nav">
 			<div class="left_nav_tab" v-for="(item, index) in menuList" :key="item.id" :class="{left_nav_active: index == curMenu}" @click="choseMenu(index)">
 				<img :src="getImgPath(item.icon_url)" class="nav_img">
@@ -98,11 +98,27 @@
 			</ul>
 		</section>
 	</section>
-	<section class="shop_cart">
-		<section></section>
-		<section></section>
-		<section></section>
-		<section></section>
+	<section class="shop_evaluation" v-if="shopNavType == 'evaluation'">
+
+	</section>
+	<section class="shop_cart_container">
+		<!-- <section class="full_screen_cover">cover</section> -->
+		<!-- <section class="food_list">foodlist</section> -->
+		<section class="shop_cart">
+			<div class="cart_icon_container">
+				<svg class="cart_icon">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
+				</svg>
+			</div>
+			<div class="cart_num">
+				<p>¥20.00</p>
+				<p>配送费¥5</p>
+			</div>
+			<div class="cart_sum">
+				<span>去结算</span>
+				<span></span>
+			</div>
+		</section>
 	</section>
   </div>
 </template>
@@ -164,7 +180,13 @@ export default {
 		choseMenu(index) {
 			let str = 'index' + index.toString()
 			this.curMenu = index
-			this.$refs[str][0].scrollIntoView()
+			// 滚动至选择的foodList
+			this.$refs[str][0].scrollIntoView(
+				{
+					behavior: 'smooth',
+					block: 'start'
+			    }
+			)
 		},
 	},
 }
@@ -329,6 +351,8 @@ export default {
 			.each_food {
 				display: flex;
 				padding: 0.2rem 0.5rem;
+				position: relative;
+				overflow: hidden;
 				.food_img {
 					padding-right: 0.5rem;
 					img {
@@ -357,6 +381,23 @@ export default {
 								margin-left: 0.07rem;
 								@include borderRadius(0.4rem);
 								@include sc(0.4rem, rgb(240, 115, 115));
+							}
+							.attribute_new {
+								position: absolute;
+								top: 0;
+								left: 0;
+								background-color: #4cd964;
+								@include wh(2rem, 2rem);
+								display: flex;
+								align-items: flex-end;
+								transform: rotate(-45deg) translate(-.1rem, -1.5rem);
+								border: none;
+								border-radius: 0;
+								p{
+									@include sc(.4rem, #fff);
+									text-align: center;
+									flex: 1;
+								}
 							}
 						}
 					}
@@ -410,11 +451,44 @@ export default {
 		}
 	}
 }
-.shop_cart {
+.shop_evaluation{}
+.shop_cart_container{
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
+	.full_screen_cover{}
+	.food_list{}
+	.shop_cart{
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 2rem;
+		width: 100%;
+		background-color: #3d3d3f;
+		display: flex;
+		align-items: center;
+		.cart_icon_container{
+			flex: 1;
+			.cart_icon{
+				@include wh(2rem, 2rem);
+				fill: #3190e8;
+			}
+		}
+		.cart_num{
+			flex: 2;
+			p{
+				@include sc(0.8rem, #fff);	
+			}
+		}
+		.cart_sum{
+			flex: 1;
+			span {
+				@include sc(0.8rem, #fff);
+			}
+		}
+	}
 }
 </style>
 
