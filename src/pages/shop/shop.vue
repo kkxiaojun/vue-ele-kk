@@ -45,7 +45,7 @@
 		<section class="content_right">
 			<ul>
 				<li v-for="(item, index) in menuList" :key="index">
-					<section class="food_header">
+					<section class="food_header" :ref="'index'+index">
 						<span class="h_hot">{{item.name}}</span>
 						<span class="h_center">{{item.description}}</span>
 						<span class="h_right">
@@ -162,7 +162,9 @@ export default {
 			})
 		},
 		choseMenu(index) {
+			let str = 'index' + index.toString()
 			this.curMenu = index
+			this.$refs[str][0].scrollIntoView()
 		},
 	},
 }
