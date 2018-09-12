@@ -99,12 +99,117 @@
 		</section>
 	</section>
 	<section class="shop_evaluation" v-if="shopNavType == 'evaluation'">
-
+		<header class="rating">
+			<section class="rating_left">
+				<p>0.0</p>
+				<p>综合评价</p>
+				<p>低于周边99.9%的商家</p>
+			</section>
+			<section class="rating_right">
+				<p class="detail_p">
+					<span class="service_title">服务态度</span>
+					<span>*****</span>
+					<span class="service_score">1.1</span>
+				</p>
+				<p class="detail_p">
+					<span class="service_title">菜品评价</span>
+					<span>*****</span>
+					<span class="service_score">1.1</span>
+				</p>
+				<p class="detail_p">
+					<span class="service_title">送达时间</span>
+					<span class="service_score">2</span>
+					<span class="service_title">分钟</span>
+				</p>
+			</section>
+		</header>
+		<ul class="satisfaction">
+			<li class="s_li active">蚂蚁个球</li>
+			<li class="s_li good">蚂蚁个球</li>
+			<li class="s_li bad">蚂蚁个球</li>
+			<li class="s_li active">蚂蚁个球</li>
+			<li class="s_li good">蚂蚁个球</li>
+			<li class="s_li bad">蚂蚁个球</li>
+			<li class="s_li active">蚂蚁个球</li>
+			<li class="s_li good">蚂蚁个球</li>
+			<li class="s_li bad">蚂蚁个球</li>
+		</ul>
+		<ul class="rating_list">
+			<li class="rating_list_li">
+				<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="li_icon">
+				<section class="li_detail">
+					<p class="li_detail_user">
+						<span>name</span>
+						<span>21:00:00</span>
+					</p>
+					<p class="li_detail_send">
+						<span>*****</span>
+						<span>按时到达</span>
+					</p>
+					<ul class="li_detail_img">
+						<li>
+							<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="user_upload_img">
+						</li>
+					</ul>
+					<ul class="li_detail_name">
+						<li class="ellipsis">
+							11122
+						</li>
+					</ul>
+				</section>
+			</li>
+			<li class="rating_list_li">
+				<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="li_icon">
+				<section class="li_detail">
+					<p class="li_detail_user">
+						<span>name</span>
+						<span>21:00:00</span>
+					</p>
+					<p class="li_detail_send">
+						<span>*****</span>
+						<span>按时到达</span>
+					</p>
+					<ul class="li_detail_img">
+						<li>
+							<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="user_upload_img">
+						</li>
+					</ul>
+					<ul class="li_detail_name">
+						<li class="ellipsis">
+							11122
+						</li>
+					</ul>
+				</section>
+			</li>
+			<li class="rating_list_li">
+				<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="li_icon">
+				<section class="li_detail">
+					<p class="li_detail_user">
+						<span>name</span>
+						<span>21:00:00</span>
+					</p>
+					<p class="li_detail_send">
+						<span>*****</span>
+						<span>按时到达</span>
+					</p>
+					<ul class="li_detail_img">
+						<li>
+							<img src="http://cangdu.org:8001/img/164ad0b6a3917599.jpg" class="user_upload_img">
+						</li>
+					</ul>
+					<ul class="li_detail_name">
+						<li class="ellipsis">
+							11122
+						</li>
+					</ul>
+				</section>
+			</li>
+		</ul>
 	</section>
 	<section class="shop_cart_container">
 		<!-- <section class="full_screen_cover">cover</section> -->
 		<!-- <section class="food_list">foodlist</section> -->
-		<section class="shop_cart">
+		<!-- <section class="shop_cart">
 			<div class="cart_icon_container">
 				<svg class="cart_icon">
 					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
@@ -118,7 +223,7 @@
 				<span>去结算</span>
 				<span></span>
 			</div>
-		</section>
+		</section> -->
 	</section>
   </div>
 </template>
@@ -181,12 +286,10 @@ export default {
 			let str = 'index' + index.toString()
 			this.curMenu = index
 			// 滚动至选择的foodList
-			this.$refs[str][0].scrollIntoView(
-				{
-					behavior: 'smooth',
-					block: 'start'
-			    }
-			)
+			this.$refs[str][0].scrollIntoView({
+				behavior: 'smooth',
+				block: 'start',
+			})
 		},
 	},
 }
@@ -390,11 +493,11 @@ export default {
 								@include wh(2rem, 2rem);
 								display: flex;
 								align-items: flex-end;
-								transform: rotate(-45deg) translate(-.1rem, -1.5rem);
+								transform: rotate(-45deg) translate(-0.1rem, -1.5rem);
 								border: none;
 								border-radius: 0;
-								p{
-									@include sc(.4rem, #fff);
+								p {
+									@include sc(0.4rem, #fff);
 									text-align: center;
 									flex: 1;
 								}
@@ -451,15 +554,104 @@ export default {
 		}
 	}
 }
-.shop_evaluation{}
-.shop_cart_container{
+.shop_evaluation {
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+	.rating {
+		padding: 0.5rem 0.2rem;
+		background-color: #fff;
+		@include fj;
+		.rating_left {
+			flex: 1;
+			text-align: center;
+			p:nth-of-type(1) {
+				@include sc(1.3rem, $score);
+			}
+			p:nth-of-type(2) {
+				@include sc(0.7rem, #666);
+			}
+			p:nth-of-type(3) {
+				margin-top: 0.3rem;
+				@include sc(0.6rem, #999);
+			}
+		}
+		.rating_right {
+			flex: 1;
+			text-align: left;
+			.detail_p {
+				.service_title {
+					@include sc(0.6rem, #666);
+				}
+				.service_score {
+					@include sc(0.6rem, $score);
+				}
+			}
+		}
+	}
+	.satisfaction {
+		display: flex;
+		flex-wrap: wrap;
+		margin-top: 0.6rem;
+		padding: 0.5rem 0.3rem;
+		background-color: #fff;
+		.s_li {
+			@include sc(0.6rem, #6d7885);
+			margin: 0 0.5rem 0.3rem 0;
+			padding: 0.2rem 0.1rem;
+			opacity: 0.8;
+			@include borderRadius(0.4rem);
+			&.active {
+				background-color: $blue;
+				color: #fff;
+			}
+			&.good {
+				background-color: #ebf5ff;
+			}
+			&.bad {
+				background-color: #f5f5f5;
+			}
+		}
+	}
+	.rating_list {
+		background-color: #fff;
+		padding: 0 0.5rem;
+		.rating_list_li {
+			display: flex;
+			border-top: 0.01rem solid $bc;
+			opacity: 0.8;
+			.li_icon {
+				@include wh(1.6rem, 1.6rem);
+				@include borderRadius(50%);
+			}
+			.li_detail {
+				flex-grow: 1;
+			}
+			.li_detail_user{
+				position: relative;
+				span:nth-of-type(1){
+					position: absolute;
+					right: 1rem;
+				}
+			}
+			.li_detail_img{
+				.user_upload_img{
+					@include wh(2rem, 2rem);
+				}
+			}
+		}
+	}
+}
+.shop_cart_container {
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
-	.full_screen_cover{}
-	.food_list{}
-	.shop_cart{
+	.full_screen_cover {
+	}
+	.food_list {
+	}
+	.shop_cart {
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -469,20 +661,20 @@ export default {
 		background-color: #3d3d3f;
 		display: flex;
 		align-items: center;
-		.cart_icon_container{
+		.cart_icon_container {
 			flex: 1;
-			.cart_icon{
+			.cart_icon {
 				@include wh(2rem, 2rem);
 				fill: #3190e8;
 			}
 		}
-		.cart_num{
+		.cart_num {
 			flex: 2;
-			p{
-				@include sc(0.8rem, #fff);	
+			p {
+				@include sc(0.8rem, #fff);
 			}
 		}
-		.cart_sum{
+		.cart_sum {
 			flex: 1;
 			span {
 				@include sc(0.8rem, #fff);

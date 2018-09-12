@@ -92,7 +92,7 @@ export default {
 					// 将foodTypes转换为二维数组，为了让每个swiper-slide显示8个
 					let foodLen = res.data.length
 					let foodArr = []
-					for (let i = 0, j = 0; i < foodLen, j < 4; i += 8, j++) {
+					for (let i = 0, j = 0; i < foodLen, j < foodLen / 8; i += 8, j++) {
 						foodArr[j] = res.data.slice(i, i + 8)
 					}
 					this.foodTypes = foodArr
