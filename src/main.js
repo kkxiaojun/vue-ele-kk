@@ -6,6 +6,7 @@ import router from './router/router'
 import store from './store'
 import './common/js/rem'
 import FastClick from 'fastclick'
+import './common/js/filters'
 
 // 解决移动端click事件延迟300ms（为了判断是单击还是双击）
 if ('addEventListener' in document) {
@@ -14,7 +15,6 @@ if ('addEventListener' in document) {
   }, false)
 }
 Vue.config.productionTip = false
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

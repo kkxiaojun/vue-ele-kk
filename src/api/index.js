@@ -193,7 +193,7 @@ export function getFoodCategory(data, callback) {
  * @param {String} longitude 
  * @param {func} callback 
  */
-export function getFoodDelivery (latitude, longitude, callback) {
+export function getFoodDelivery(latitude, longitude, callback) {
   axios({
     method: 'get',
     url: 'api/shopping/v1/restaurants/delivery_modes',
@@ -216,7 +216,7 @@ export function getFoodDelivery (latitude, longitude, callback) {
  * @param {String} longitude 
  * @param {func} callback 
  */
-export function getFoodActivity (latitude, longitude, callback) {
+export function getFoodActivity(latitude, longitude, callback) {
   axios({
     method: 'get',
     url: 'api/shopping/v1/restaurants/activity_attributes',
@@ -258,7 +258,7 @@ export function getShop(shopId, latitude, longitude, callback) {
 }
 /**
  * 获取shopmenu
- * @param {String} shopId 
+ * @param {Number} shopId 
  * @param {func} callback 
  */
 export function getShopMenu(shopId, callback) {
@@ -268,6 +268,59 @@ export function getShopMenu(shopId, callback) {
     params: {
       restaurant_id: shopId
     }
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+/**
+ * 
+ * @param {Number} shopId 
+ * @param {func} callback 
+ */
+export function getShopScore(shopId, callback) {
+  axios({
+    method: 'get',
+    url: 'api/ugc/v2/restaurants/' + shopId + '/ratings/scores'
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+/**
+ * 
+ * @param {Number} shopId 
+ * @param {func} callback 
+ */
+export function getRatingTag(shopId, callback) {
+  axios({
+    method: 'get',
+    url: 'api/ugc/v2/restaurants/' + shopId + '/ratings/tags'
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+export function getRatingList(shopId, offset, tag_name = '', callback) {
+  let params = {
+    has_content: true,
+    offset,
+    limit: 10,
+    tag_name
+  }
+  axios({
+    method: 'get',
+    url: 'api/ugc/v2/restaurants/' + shopId + '/ratings',
+    data: params
   })
     .then(res => {
       callback(res)
