@@ -4,6 +4,11 @@
       <img class="shop_top_cover" :src="imgBaseUrl + shopDetail.image_path">
       <section class="shop_top_container">
 		<section class="top_head">
+			<span class="goback" @click="goback">
+				<svg data-v-12835cef="" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
+					<polyline data-v-12835cef="" points="12,18 4,9 12,0" style="fill: none; stroke: rgb(255, 255, 255); stroke-width: 2;"></polyline>
+				</svg>
+			</span>
         	<img class="shop_left" :src="imgBaseUrl + shopDetail.image_path">
         	<section class="shop_middle">
 				<header class="shop_title">{{shopDetail.name}}</header>
@@ -77,25 +82,31 @@
 											<span>{{food.specfoods[0].price}}</span>
 											<span>起</span>
 										</section>
-										<span class="price_add">
-											<span class="reduce">
-												<svg>
-													<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
-												</svg>
-											</span>
-											<span class="num">1</span>
-											<span class="add">
-												<svg class="add_icon">
-													<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
-												</svg>
-											</span>
-										</span>
+										<buy-cart></buy-cart>
 									</section>
 								</section>
 							</li>
 						</ul>
 					</li>
 				</ul>
+			</section>
+			<section class="shop_cart_container">
+				<section class="food_list">foodlist</section>
+				<section class="shop_cart">
+				<div class="cart_icon_container">
+					<span class="cart" :class="{bg_color: false}">
+						<span class="num">1</span>	
+						<svg class="cart_icon">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
+						</svg>
+					</span>
+				</div>
+				<div class="cart_num">
+					<p class="cart_num_sum">¥20.00</p>
+					<p class="cart_num_send">配送费¥5</p>
+				</div>
+				<div class="cart_sum" :class="{active: false}">去结算</div>
+				</section>
 			</section>
 		</section>
 	</transition>
@@ -111,17 +122,21 @@
 					<section class="rating_right">
 						<p class="detail_p">
 							<span class="service_title">服务态度</span>
-							<span>*****</span>
+							<span class="service_star">
+								<rating-star :rating="shopDetailRating.service_score"></rating-star>
+							</span>
 							<span class="service_score">{{shopDetailRating.service_score | tofixed(1)}}</span>
 						</p>
 						<p class="detail_p">
 							<span class="service_title">菜品评价</span>
-							<span>*****</span>
+							<span class="service_star">
+								<rating-star :rating="shopDetailRating.food_score"></rating-star>
+							</span>
 							<span class="service_score">{{shopDetailRating.food_score | tofixed(1)}}</span>
 						</p>
 						<p class="detail_p">
 							<span class="service_title">送达时间</span>
-							<span class="service_score">{{shopDetailRating.deliver_time}}</span>
+							<span class="service_score service_star">{{shopDetailRating.deliver_time}}</span>
 							<span class="service_title">分钟</span>
 						</p>
 					</section>
@@ -140,8 +155,8 @@
 								<span>{{item.rated_at}}</span>
 							</p>
 							<p class="li_detail_send">
-								<span>*****</span>
-								<span>{{item.time_spent_desc}}</span>
+								<rating-star :rating="item.rating"></rating-star>
+								<span class="li_detail_send_desc" v-if="item.time_spent_desc">{{item.time_spent_desc}}</span>
 							</p>
 							<ul class="li_detail_img">
 								<li v-for="(img, imgIndex) in item.item_ratings" :key="imgIndex">
@@ -157,25 +172,7 @@
 			</div>
 		</section>
 	</transition>
-	<section class="shop_cart_container">
-		<!-- <section class="full_screen_cover">cover</section> -->
-		<!-- <section class="food_list">foodlist</section> -->
-		<!-- <section class="shop_cart">
-			<div class="cart_icon_container">
-				<svg class="cart_icon">
-					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
-				</svg>
-			</div>
-			<div class="cart_num">
-				<p>¥20.00</p>
-				<p>配送费¥5</p>
-			</div>
-			<div class="cart_sum">
-				<span>去结算</span>
-				<span></span>
-			</div>
-		</section> -->
-	</section>
+	<!-- <section class="full_screen_cover">cover</section> -->
   </div>
 </template>
 <script>
@@ -184,6 +181,8 @@ import { mapState } from 'vuex'
 import { checkCode } from 'common/js/util'
 import { imgBaseUrl } from 'config/env'
 import { getImgPath } from 'common/js/mixin'
+import RatingStar from 'components/common/ratingStar'
+import BuyCart from 'components/common/buyCart'
 export default {
 	data() {
 		return {
@@ -212,9 +211,9 @@ export default {
 	},
 	computed: {
 		...mapState(['latitude', 'longitude']),
-		shopNotice: function () {
+		shopNotice: function() {
 			return this.shopDetail.promotion_info || '欢迎！祝您用餐愉快。'
-		}
+		},
 	},
 	mixins: [getImgPath],
 	methods: {
@@ -272,10 +271,17 @@ export default {
 			// 根据选择的tag获取评论列表
 			getRatingList(this.shopId, this.ratingOffset, item.name, res => {
 				if (checkCode(res.status)) {
-					this.ratingList =res.data
-				} 
+					this.ratingList = res.data
+				}
 			})
+		},
+		goback() {
+			this.$router.go(-1)
 		}
+	},
+	components: {
+		RatingStar,
+		BuyCart
 	},
 }
 </script>
@@ -312,6 +318,13 @@ export default {
 			position: relative;
 			display: flex;
 			align-items: center;
+			.goback{
+				position: absolute;
+				left: 0;
+				top: 0;
+				@include wh(1rem, 1rem);
+				z-index: 100;
+			}
 			.shop_left {
 				@include wh(3rem, 3rem);
 				margin-right: 0.2rem;
@@ -512,28 +525,85 @@ export default {
 								@include sc(0.5rem, #999);
 							}
 						}
-						.price_add {
-							display: flex;
-							align-items: center;
-							.reduce {
-								svg {
-									@include wh(0.9rem, 0.9rem);
-									fill: #3190e8;
-								}
-							}
-							.num {
-								@include sc(0.6rem, #999);
-								text-align: center;
-								min-width: 1rem;
-							}
-							.add {
-								svg {
-									@include wh(0.9rem, 0.9rem);
-									fill: #3190e8;
-								}
-							}
-						}
 					}
+				}
+			}
+		}
+	}
+	.shop_cart_container {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 15;
+		.food_list {
+			position: fixed;
+			width: 100%;
+			left: 0;
+			bottom: 2rem;
+			background-color: #fff;
+			z-index: 12;
+		}
+		.shop_cart {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 2rem;
+			width: 100%;
+			background-color: #3d3d3f;
+			display: flex;
+			align-items: center;
+			z-index: 15;
+			.cart_icon_container {
+				flex: 1;
+				.cart{
+					display: flex;
+					position: absolute;
+					bottom: 0.7rem;
+					left: 0.9rem;
+					padding: 0.4rem;
+					background-color: #3d3d3f;
+					border: 0.2rem solid #444;
+					box-shadow: 0 0 0.2rem #444;
+					@include borderRadius(50%);
+					&.bg_color{
+						background-color: #3190e8;
+					}
+					.num{
+					    position: absolute;
+						top: -0.25rem;
+						right: -0.25rem;
+						@include sc(0.5rem, #ffff);
+						@include borderRadius(50%);
+						@include wh(0.6rem,0.6rem);
+						line-height: 0.7rem;
+						text-align: center;
+						background-color: #ff461d;
+					}
+				}
+				.cart_icon {
+					@include wh(1.2rem, 1.2rem);
+					fill: #3190e8;
+				}
+			}
+			.cart_num {
+				flex: 2;
+				.cart_num_sum{
+					@include sc(0.9rem, #fff);
+				}
+				.cart_num_send{
+					@include sc(0.5rem, #fff);
+				}
+			}
+			.cart_sum {
+				flex: 1;
+				height: 100%;
+				line-height: 2rem;
+				text-align: center;
+				@include sc(0.8rem, #fff);
+				&.active{
+					background-color: #4cd964;
 				}
 			}
 		}
@@ -544,7 +614,7 @@ export default {
 	display: flex;
 	flex-direction: column;
 	overflow-y: hidden;
-	.shop_evaluation_wrap{
+	.shop_evaluation_wrap {
 		overflow-y: auto;
 	}
 	.rating {
@@ -569,8 +639,13 @@ export default {
 			flex: 1;
 			text-align: left;
 			.detail_p {
+				display: flex;
+				padding: 0.2rem;
 				.service_title {
 					@include sc(0.6rem, #666);
+				}
+				.service_star {
+					padding: 0 0.2rem;
 				}
 				.service_score {
 					@include sc(0.6rem, $score);
@@ -616,29 +691,30 @@ export default {
 			.li_detail {
 				flex-grow: 1;
 			}
-			.li_detail_user{
+			.li_detail_user {
 				position: relative;
 				@include sc(0.6rem, #666);
-				span:nth-of-type(2){
+				span:nth-of-type(2) {
 					position: absolute;
 					right: 1rem;
 				}
 			}
-			.li_detail_send{
-				span:nth-of-type(2){
-					@include sc(0.8rem, #666);	
+			.li_detail_send {
+				height: 1rem;
+				.li_detail_send_desc {
+					@include sc(0.6rem, #666);
 				}
 			}
-			.li_detail_img{
+			.li_detail_img {
 				display: flex;
-				.user_upload_img{
+				.user_upload_img {
 					@include wh(2rem, 2rem);
 					margin-right: 0.3rem;
 				}
 			}
-			.li_detail_name{
+			.li_detail_name {
 				display: flex;
-				li{
+				li {
 					width: 2.2rem;
 					margin-right: 0.2rem;
 					padding: 0.1rem 0.2rem;
@@ -650,52 +726,23 @@ export default {
 		}
 	}
 }
-.shop_cart_container {
-	position: absolute;
-	bottom: 0;
+.full_screen_cover {
+	position: fixed;
+	top: 0;
 	left: 0;
-	right: 0;
-	.full_screen_cover {
-	}
-	.food_list {
-	}
-	.shop_cart {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		height: 2rem;
-		width: 100%;
-		background-color: #3d3d3f;
-		display: flex;
-		align-items: center;
-		.cart_icon_container {
-			flex: 1;
-			.cart_icon {
-				@include wh(2rem, 2rem);
-				fill: #3190e8;
-			}
-		}
-		.cart_num {
-			flex: 2;
-			p {
-				@include sc(0.8rem, #fff);
-			}
-		}
-		.cart_sum {
-			flex: 1;
-			span {
-				@include sc(0.8rem, #fff);
-			}
-		}
-	}
+	@include wh(100%, 100%);
+	background-color: rgba(0,0,0,.3);
+	opacity: 0.5;
+	z-index: 10;
 }
 // transition
-.shop-nav-enter-active, .shop-nav-leave-active{
-	transition: opacity .3s;
+.shop-nav-enter-active,
+.shop-nav-leave-active {
+	transition: opacity 0.3s;
 }
-.shop-nav-enter, .shop-nav-leave-to{
-    opacity: 0;
+.shop-nav-enter,
+.shop-nav-leave-to {
+	opacity: 0;
 }
 </style>
 

@@ -14,8 +14,7 @@
           </header>
           <section class="score_num">
             <section class="score_num_left">
-              <span class="point_txt">****</span>
-              <span class="point">{{item.rating}}</span>
+              <rating-star :rating="item.rating"></rating-star>
               <span class="num">月售{{item.recent_order_num}}单</span>
             </section>
             <section class="score_num_right">
@@ -47,6 +46,7 @@
 import { getShopList } from 'api/index'
 import { mapState } from 'vuex'
 import { checkCode } from 'common/js/util'
+import RatingStar from 'components/common/ratingStar'
 export default {
 	data() {
 		return {
@@ -94,6 +94,7 @@ export default {
 	},
 	methods: {
 		initData() {
+			// 获取shop列表
 			getShopList(this.latitude, this.longitude, this.offset, this.restaurantCategoryId)
 			 .then(res => {
 				if (checkCode(res.status)) {
@@ -126,6 +127,9 @@ export default {
 		confirmSelect: function () {
 			this.listenCategoryIds()
 		}
+	},
+	components: {
+		RatingStar
 	}
 }
 </script>
@@ -195,12 +199,7 @@ export default {
 			}
 			.score_num {
 				.score_num_left {
-					.point_txt {
-						color: #ff6000;
-					}
-					.point {
-						@include sc(0.4rem, #ff6000);
-					}
+					display: flex;
 					.num {
 						@include sc(0.4rem, #666);
 					}
