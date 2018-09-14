@@ -104,24 +104,24 @@
 			<div class="shop_evaluation_wrap">
 				<header class="rating">
 					<section class="rating_left">
-						<p>{{shopDetail.rating}}</p>
+						<p>{{shopDetail.rating | tofixed(1)}}</p>
 						<p>综合评价</p>
-						<p>低于周边{{shopDetailRating.compare_rating}}%的商家</p>
+						<p>低于周边{{shopDetailRating.compare_rating | topercent | tofixed(2)}}%的商家</p>
 					</section>
 					<section class="rating_right">
 						<p class="detail_p">
 							<span class="service_title">服务态度</span>
 							<span>*****</span>
-							<span class="service_score">{{shopDetailRating.service_score}}</span>
+							<span class="service_score">{{shopDetailRating.service_score | tofixed(1)}}</span>
 						</p>
 						<p class="detail_p">
 							<span class="service_title">菜品评价</span>
 							<span>*****</span>
-							<span class="service_score">{{shopDetailRating.food_score}}</span>
+							<span class="service_score">{{shopDetailRating.food_score | tofixed(1)}}</span>
 						</p>
 						<p class="detail_p">
 							<span class="service_title">送达时间</span>
-							<span class="service_score">{{shopDetailRating.order_lead_time}}</span>
+							<span class="service_score">{{shopDetailRating.deliver_time}}</span>
 							<span class="service_title">分钟</span>
 						</p>
 					</section>
@@ -256,6 +256,7 @@ export default {
 				}
 			})
 		},
+		// 选择左边food分类
 		chooseMenu(index) {
 			let str = 'index' + index.toString()
 			this.curMenu = index
@@ -265,6 +266,7 @@ export default {
 				block: 'start',
 			})
 		},
+		// 选择评论类型
 		chooseRating(item, index) {
 			this.shopDetailRatingTagIndex = index
 			// 根据选择的tag获取评论列表

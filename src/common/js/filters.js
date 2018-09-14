@@ -1,13 +1,17 @@
 import Vue from 'vue'
-Vue.filter('capitalize', function (value) {
-    if (!value) return ''
-    value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
+/**
+ * 把 Number 四舍五入为n位小数 toFixed
+ */
+Vue.filter('tofixed', function (value, len) {
+    if (!value) return
+    if (typeof value !== 'number') return
+    return value.toFixed(len)
   })
-Vue.filter('tofixed2', function (value) {
-  if (!value) return ''
-  if (typeof value == Number) {
-    return value = value.tofixed(2)
-  }
-  return ''
+/**
+ * 把 Number 转换为 百分数%
+ */
+Vue.filter('topercent', function (value, len) {
+  if (!value) return
+  if (typeof value !== 'number') return
+  return value * 100
 })
