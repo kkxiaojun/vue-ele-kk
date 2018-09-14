@@ -21,7 +21,19 @@ npm run build
 # build for production and view the bundle analyzer report
 npm run build --report
 ```
-
+## 已完成功能
+- [x] 定位功能 -- 完成
+- [x] 选择城市 -- 完成
+- [x] 搜索地址 -- 完成
+- [x] 展示所选地址附近商家列表 -- 完成
+- [x] 搜索美食，餐馆 -- 完成
+- [x] 根据距离、销量、评分、特色菜、配送方式等进行排序和筛选 -- 完成
+- [x] 餐馆食品列表页 -- 完成
+- [x] 店铺评价页面 -- 完成
+- [x] 单个食品详情页面 -- 未完成
+- [x] 商家详情页 -- 未完成
+- [x] 登录、注册 -- 完成
+- [x] 个人中心 -- 完成
 ## 说明
  当然，开始写的时候也可以根据原型图和界面功能结构一个个往下写，[饿了么app原型图链接地址](https://www.xiaopiu.com/user?uid=5b69b06ec496fe18064cd5c0&libPop=project&libId=5b69b085c496fe18064cd5c2)
 
