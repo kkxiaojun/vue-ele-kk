@@ -1,5 +1,6 @@
 <template>
   <div class="shop">
+	<!-- top展示 -->
     <section class="shop_top">
       <img class="shop_top_cover" :src="imgBaseUrl + shopDetail.image_path">
       <section class="shop_top_container">
@@ -31,6 +32,7 @@
 		</section>
       </section>
     </section>
+	<!-- 商品与评价切换 -->
     <nav class="shop_nav">
 		<div class="nav_tab" @click="shopNavType = 'shop'">
 			<span :class="{nav_active: shopNavType == 'shop'}">商品</span>
@@ -39,6 +41,7 @@
 			<span :class="{nav_active: shopNavType == 'evaluation'}">评价</span>
 		</div>
 	</nav>
+	<!-- 商品tab -->
 	<transition name="shop-nav">
 		<section class="shop_content" v-if="shopNavType == 'shop'">
 			<nav class="content_nav">
@@ -82,7 +85,7 @@
 											<span>{{food.specfoods[0].price}}</span>
 											<span>起</span>
 										</section>
-										<buy-cart></buy-cart>
+										<buy-cart :shop-id="shopId" :food="food" @show-spec="showGoodsSpec"></buy-cart>
 									</section>
 								</section>
 							</li>
@@ -108,8 +111,10 @@
 				<div class="cart_sum" :class="{active: false}">去结算</div>
 				</section>
 			</section>
+			<!-- <section class="shop_cart_cover">cover</section> -->
 		</section>
 	</transition>
+	<!-- 评论tab -->
 	<transition name="shop-nav">
 		<section class="shop_evaluation" v-if="shopNavType == 'evaluation'">
 			<div class="shop_evaluation_wrap">
@@ -172,12 +177,42 @@
 			</div>
 		</section>
 	</transition>
-	<!-- <section class="full_screen_cover">cover</section> -->
+	<!-- 商品中多选规格展示 -->
+	<section class="goods_spec_container" v-if="showSpec">
+		<div class="specs_cover" @click="showGoodsSpec"></div>
+		<div class="specs_list">
+			<header class="specs_list_header">
+				<h4 class="ellipsis">{{choosedFoods.name}}</h4>
+				<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" version="1.1" class="specs_cancel" @click="showGoodsSpec">
+					<line x1="0" y1="0" x2="16" y2="16"  stroke="#666" stroke-width="1.2"/>
+					<line x1="0" y1="16" x2="16" y2="0"  stroke="#666" stroke-width="1.2"/>
+				</svg>
+			</header>
+			<section class="specs_details">
+				<h5 class="specs_details_title">{{choosedFoods.specifications[0].name}}</h5>
+				<ul>
+					<li v-for="(item, itemIndex) in choosedFoods.specifications[0].values" :key="itemIndex" :class="{specs_activity: itemIndex == choosedFoodsSpecIndex}" @click="chooseGoodsSpecIndex(itemIndex)">
+						{{item}}
+					</li>
+				</ul>
+			</section>
+			<footer class="specs_footer">
+				<div class="specs_price">
+					<span>¥ </span>
+					<span>{{choosedFoods.specfoods[choosedFoodsSpecIndex].price}}</span>
+				</div>
+				<div class="specs_addto_cart" @click="addSpecsCart(choosedFoods.category_id, choosedFoods.item_id, choosedFoods.specfoods[choosedFoodsSpecIndex].food_id, 
+				choosedFoods.specfoods[choosedFoodsSpecIndex].name, choosedFoods.specfoods[choosedFoodsSpecIndex].price, choosedFoods.specifications[0].values[choosedFoodsSpecIndex], 
+				choosedFoods.specfoods[choosedFoodsSpecIndex].packing_fee, choosedFoods.specfoods[choosedFoodsSpecIndex].sku_id, choosedFoods.specfoods[choosedFoodsSpecIndex].stock)">
+				加入购物车</div>
+			</footer>
+		</div>
+	</section>
   </div>
 </template>
 <script>
 import { getShop, getPosByGeohash, getShopMenu, getShopScore, getRatingTag, getRatingList } from 'api/index'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { checkCode } from 'common/js/util'
 import { imgBaseUrl } from 'config/env'
 import { getImgPath } from 'common/js/mixin'
@@ -197,6 +232,9 @@ export default {
 			shopNavType: 'shop', // 商铺的商品与评价切换
 			shopNavLeft: 'hot', // 商铺的热销榜与优惠切换
 			menuList: [], // 食品列表
+			showSpec: false, // 是否显示商品规格弹窗
+			choosedFoods: null, // 当前选中的商品规格数据
+			choosedFoodsSpecIndex: 0, // 当前选中商品规格的索引值
 			curMenu: 0, // 默认为0
 			imgBaseUrl,
 		}
@@ -217,6 +255,9 @@ export default {
 	},
 	mixins: [getImgPath],
 	methods: {
+		...mapMutations[
+			'ADD_CART'
+		],
 		initData() {
 			//防止刷新页面时，vuex状态丢失
 			if (!this.latitude) {
@@ -274,6 +315,23 @@ export default {
 					this.ratingList = res.data
 				}
 			})
+		},
+		// 展示food商品规格
+		showGoodsSpec(food) {
+			if (food) {
+				this.choosedFoods = food
+			}
+			this.showSpec = !this.showSpec
+			this.choosedFoodsSpecIndex = 0
+		},
+		// 记录当前所选规格的索引值
+		chooseGoodsSpecIndex(index) {
+			this.choosedFoodsSpecIndex = index
+		},
+		// 多规格商品加入购物车
+		addSpecsCart(category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock){
+			this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock});
+			this.showGoodsSpec();
 		},
 		goback() {
 			this.$router.go(-1)
@@ -726,11 +784,101 @@ export default {
 		}
 	}
 }
-.full_screen_cover {
+.goods_spec_container {
+    .specs_cover{
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,.4);
+        z-index: 17;
+    }
+    .specs_list{
+        position: fixed;
+        top: 50%;
+        left: 50%;
+		transform: translate(-50%, -50%);
+        width: 70%;
+        background-color: #fff;
+        z-index: 18;
+        border: 1px;
+        border-radius: 0.2rem;
+        .specs_list_header{
+            h4{
+                @include sc(.7rem, #222);
+                font-weight: normal;
+                text-align: center;
+                padding: .5rem;
+            }
+            .specs_cancel{
+                position: absolute;
+                right: .5rem;
+                top: .5rem;
+            }
+        }
+        .specs_details{
+            padding: .5rem;
+            .specs_details_title{
+                @include sc(.6rem, #666);
+            }
+            ul{
+                display: flex;
+                flex-wrap: wrap;
+                padding: .4rem 0;
+                li{
+                    font-size: .6rem;
+                    padding: .3rem .5rem;
+                    border: 0.025rem solid #ddd;
+                    border-radius: .2rem;
+                    margin-right: .5rem;
+                    margin-bottom: .2rem;
+                }
+                .specs_activity{
+                    border-color: #3199e8;
+                    color: #3199e8;
+                }
+            }
+        }
+        .specs_footer{
+            @include fj;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 0.5rem;
+            border: 1px;
+            border-bottom-left-radius: .2rem;
+            border-bottom-right-radius: .2rem;
+            .specs_price{
+                span{
+                    color: #ff6000;
+                }
+                span:nth-of-type(1){
+                    font-size: .5rem;
+                }
+                span:nth-of-type(2){
+                    font-size: .8rem;
+                    font-weight: bold;
+                    font-family: Helvetica Neue,Tahoma;
+                }
+            }
+            .specs_addto_cart{
+                @include wh(4rem, 1.3rem);
+                background-color: #3199e8;
+                border: 1px;
+                border-radius: 0.15rem;
+                @include sc(.6rem, #fff);
+                text-align: center;
+                line-height: 1.3rem;
+            }
+        }
+    }
+}
+.shop_cart_cover {
 	position: fixed;
 	top: 0;
-	left: 0;
-	@include wh(100%, 100%);
+    left: 0;
+    right: 0;
+    bottom: 0;
 	background-color: rgba(0,0,0,.3);
 	opacity: 0.5;
 	z-index: 10;
