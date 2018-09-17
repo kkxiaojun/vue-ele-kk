@@ -1,4 +1,4 @@
-import { setStore } from 'common/js/util'
+import { setStore, getStore } from 'common/js/util'
 import * as TYPE from './mutation_type'
 export default {
   // 记录用户信息
@@ -36,6 +36,13 @@ export default {
   [TYPE.SAVE_ADDRESS](state, address) {
     state.removeAddress = address
   },
+	//网页初始化时从本地缓存获取购物车数据
+	[TYPE.INIT_BUYCART](state) {
+		let initCart = getStore('buyCart');
+		if (initCart) {
+			state.cartList = JSON.parse(initCart);
+		}
+	},
 	// 加入购物车
 	[TYPE.ADD_CART](state, {
 		shopid,
@@ -70,5 +77,31 @@ export default {
 		state.cartList = {...cart};
 		//存入localStorage
 		setStore('buyCart', state.cartList);
+  },
+	// 移出购物车
+	[TYPE.REDUCE_CART](state, {
+		shopid,
+		category_id,
+		item_id,
+		food_id,
+		name,
+		price,
+		specs,
+	}) {
+		let cart = state.cartList;
+		let shop = (cart[shopid] || {});
+		let category = (shop[category_id] || {});
+		let item = (category[item_id] || {});
+		if (item && item[food_id]) {
+			if (item[food_id]['num'] > 0) {
+				item[food_id]['num']--;
+				state.cartList = {...cart};
+				//存入localStorage
+				setStore('buyCart', state.cartList);
+			} else {
+				//商品数量为0，则清空当前商品的信息
+				item[food_id] = null;
+			}
+		}
 	},
 }

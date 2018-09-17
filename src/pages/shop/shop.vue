@@ -44,12 +44,15 @@
 	<!-- 商品tab -->
 	<transition name="shop-nav">
 		<section class="shop_content" v-if="shopNavType == 'shop'">
+			<!-- 左侧tab切换 -->
 			<nav class="content_nav">
 				<div class="left_nav_tab" v-for="(item, index) in menuList" :key="item.id" :class="{left_nav_active: index == curMenu}" @click="chooseMenu(index)">
 					<img :src="getImgPath(item.icon_url)" class="nav_img">
 					<span class="ellipsis">{{item.name}}</span>
+					<span class="nav_num" v-if="categoryNum[index]&&item.type==1">{{categoryNum[index]}}</span>
 				</div>
 			</nav>
+			<!-- 右侧food列表 -->
 			<section class="content_right">
 				<ul>
 					<li v-for="(item, index) in menuList" :key="index">
@@ -85,7 +88,7 @@
 											<span>{{food.specfoods[0].price}}</span>
 											<span>起</span>
 										</section>
-										<buy-cart :shop-id="shopId" :food="food" @show-spec="showGoodsSpec"></buy-cart>
+										<buy-cart :shop-id="shopId" :food="food" @show-move-ball="showMoveBall" @show-spec="showGoodsSpec"></buy-cart>
 									</section>
 								</section>
 							</li>
@@ -93,25 +96,58 @@
 					</li>
 				</ul>
 			</section>
-			<section class="shop_cart_container">
-				<section class="food_list">foodlist</section>
-				<section class="shop_cart">
+			<!-- toggle-cart -->
+			<section class="toggle_cart_container">
+				<header class="cart_header">
+					<h4>购物车</h4>
+					<p>
+						<svg class="clear_icon">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-remove"></use>
+						</svg>
+						<span class="clear_all">清空</span>
+					</p>
+				</header>
+				<ul>
+					<li class="cart_list">
+						<div class="cart_desc">
+							<span>name</span>
+							<span>desc</span>
+						</div>
+						<div class="cart_price">¥20</div>
+						<div class="cart_control">
+							<span class="reduce">
+								<svg>
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
+								</svg>
+							</span>
+							<span class="num">1</span>
+							<span class="add">
+								<svg class="add_icon">
+									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
+								</svg>
+							</span>
+						</div>
+					</li>
+				</ul>
+			</section>
+			<!-- 底部cart -->
+			<section class="cart_list_container">
 				<div class="cart_icon_container">
 					<span class="cart" :class="{bg_color: false}">
-						<span class="num">1</span>	
+						<span class="num">1</span>
 						<svg class="cart_icon">
 							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
 						</svg>
 					</span>
 				</div>
 				<div class="cart_num">
-					<p class="cart_num_sum">¥20.00</p>
+					<p class="cart_num_sum">¥{{totalPrice}}</p>
 					<p class="cart_num_send">配送费¥5</p>
 				</div>
 				<div class="cart_sum" :class="{active: false}">去结算</div>
-				</section>
 			</section>
-			<!-- <section class="shop_cart_cover">cover</section> -->
+			<!-- cart遮罩层 -->
+			<section class="shop_cart_cover">cover</section>
 		</section>
 	</transition>
 	<!-- 评论tab -->
@@ -222,7 +258,7 @@ export default {
 	data() {
 		return {
 			geohash: '', // geohash地理位置
-			shopId: '', // 商铺id
+			shopId: null, // 商铺id
 			shopDetail: '', //商铺详情
 			shopDetailRating: '', // 商铺评分详情
 			shopDetailRatingTag: '', // 商铺评分标签
@@ -232,10 +268,13 @@ export default {
 			shopNavType: 'shop', // 商铺的商品与评价切换
 			shopNavLeft: 'hot', // 商铺的热销榜与优惠切换
 			menuList: [], // 食品列表
-			showSpec: false, // 是否显示商品规格弹窗
+			showSpec: false, // 是否显示商品规格弹窗listenInCart
 			choosedFoods: null, // 当前选中的商品规格数据
 			choosedFoodsSpecIndex: 0, // 当前选中商品规格的索引值
 			curMenu: 0, // 默认为0
+			categoryNum: [], // 商品类型右上角已加入购物车的数量
+			totalPrice: 0, // 总共价格
+			cartFoodList: [], //购物车商品列表
 			imgBaseUrl,
 		}
 	},
@@ -243,21 +282,35 @@ export default {
 		let query = this.$route.query
 		this.geohash = query.geohash
 		this.shopId = query.id
+		console.log(typeof this.shopId)
+		this.INIT_BUYCART()
 	},
 	mounted() {
 		this.initData()
 	},
 	computed: {
-		...mapState(['latitude', 'longitude']),
+		...mapState(['latitude', 'longitude', 'cartList']),
+		//当前商店购物信息
+		shopCart: function (){
+			return {...this.cartList[this.shopId]};
+		},
+		//购物车中总共商品的数量
+		totalNum: function (){
+			let num = 0;
+			this.cartFoodList.forEach(item => {
+				num += item.num
+			})
+			return num
+		},
 		shopNotice: function() {
 			return this.shopDetail.promotion_info || '欢迎！祝您用餐愉快。'
 		},
 	},
 	mixins: [getImgPath],
 	methods: {
-		...mapMutations[
-			'ADD_CART'
-		],
+		...mapMutations([
+			'ADD_CART', 'INIT_BUYCART'
+		]),
 		initData() {
 			//防止刷新页面时，vuex状态丢失
 			if (!this.latitude) {
@@ -333,8 +386,56 @@ export default {
 			this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock});
 			this.showGoodsSpec();
 		},
+		/**
+		 * 初始化和shopCart变化时，重新获取购物车改变过的数据，赋值 categoryNum，totalPrice，cartFoodList，整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，包括购物车组件中自身的商品数量，使整个数据流更加清晰
+		 */
+		initCategoryNum(){
+			let newArr = [];
+			let cartFoodNum = 0;
+			this.totalPrice = 0;
+			this.cartFoodList = [];
+			this.menuList.forEach((item, index) => {
+				if (this.shopCart&&this.shopCart[item.foods[0].category_id]) {
+					let num = 0;
+					Object.keys(this.shopCart[item.foods[0].category_id]).forEach(itemid => {
+						Object.keys(this.shopCart[item.foods[0].category_id][itemid]).forEach(foodid => {
+							let foodItem = this.shopCart[item.foods[0].category_id][itemid][foodid];
+							num += foodItem.num;
+							if (item.type == 1) {
+								this.totalPrice += foodItem.num*foodItem.price;
+								if (foodItem.num > 0) {
+									this.cartFoodList[cartFoodNum] = {};
+									this.cartFoodList[cartFoodNum].category_id = item.foods[0].category_id;
+									this.cartFoodList[cartFoodNum].item_id = itemid;
+									this.cartFoodList[cartFoodNum].food_id = foodid;
+									this.cartFoodList[cartFoodNum].num = foodItem.num;
+									this.cartFoodList[cartFoodNum].price = foodItem.price;
+									this.cartFoodList[cartFoodNum].name = foodItem.name;
+									this.cartFoodList[cartFoodNum].specs = foodItem.specs;
+									cartFoodNum ++;
+								}
+							}
+						})
+					})
+					newArr[index] = num;
+				}else{
+					newArr[index] = 0;
+				}
+			})
+			this.totalPrice = this.totalPrice.toFixed(2);
+			this.categoryNum = [...newArr];
+		},
+		// 控制小球 
+		showMoveBall() {
+
+		},
 		goback() {
 			this.$router.go(-1)
+		}
+	},
+	watch: {
+		shopCart: function (value) {
+			this.initCategoryNum()
 		}
 	},
 	components: {
@@ -463,6 +564,7 @@ export default {
 	.content_nav {
 		overflow: auto;
 		.left_nav_tab {
+			position: relative;
 			display: flex;
 			align-items: center;
 			border-left: 0.13rem solid #f5f5f5;
@@ -471,12 +573,24 @@ export default {
 			text-align: center;
 			@include sc(0.6rem, #666);
 			&.left_nav_active {
+				position: relative;
 				background: #fff;
 				border-left-color: #3190e8;
 			}
 			.nav_img {
 				@include wh(0.7rem, 0.7rem);
 				margin-right: 0.2rem;
+			}
+			.nav_num{
+				position: absolute;
+				top: 0.25rem;
+				right: 0.25rem;
+				@include sc(0.5rem, #ffff);
+				@include borderRadius(50%);
+				@include wh(0.6rem,0.6rem);
+				line-height: 0.7rem;
+				text-align: center;
+				background-color: #ff461d;
 			}
 		}
 		&:first-child {
@@ -512,156 +626,78 @@ export default {
 				padding: 0.2rem 0.5rem;
 				position: relative;
 				overflow: hidden;
-				.food_img {
-					padding-right: 0.5rem;
-					img {
-						display: block;
-						@include borderRadius(0.2rem);
-						@include wh(2.3rem, 2.3rem);
-					}
+			}
+			.food_img {
+				padding-right: 0.5rem;
+				img {
+					display: block;
+					@include borderRadius(0.2rem);
+					@include wh(2.3rem, 2.3rem);
 				}
-				.food_right {
+			}
+			.food_right {
+				display: flex;
+				flex-direction: column;
+				flex: auto;
+			}
+			.food_detail {
+				@include fj;
+				align-items: center;
+				.food_name {
+					width: 80%;
+					@include sc(0.8rem, #333);
+				}
+				.food_detail_ul {
 					display: flex;
-					flex-direction: column;
-					flex: auto;
-					.food_detail {
-						@include fj;
-						align-items: center;
-						.food_name {
-							width: 80%;
-							@include sc(0.8rem, #333);
-						}
-						.food_detail_ul {
-							display: flex;
-							.food_detail_li {
-								height: 0.5rem;
-								line-height: 0.5rem;
-								border: 1px solid rgb(240, 115, 115);
-								margin-left: 0.07rem;
-								@include borderRadius(0.4rem);
-								@include sc(0.4rem, rgb(240, 115, 115));
-							}
-							.attribute_new {
-								position: absolute;
-								top: 0;
-								left: 0;
-								background-color: #4cd964;
-								@include wh(2rem, 2rem);
-								display: flex;
-								align-items: flex-end;
-								transform: rotate(-45deg) translate(-0.1rem, -1.5rem);
-								border: none;
-								border-radius: 0;
-								p {
-									@include sc(0.4rem, #fff);
-									text-align: center;
-									flex: 1;
-								}
-							}
-						}
+					.food_detail_li {
+						height: 0.5rem;
+						line-height: 0.5rem;
+						border: 1px solid rgb(240, 115, 115);
+						margin-left: 0.07rem;
+						@include borderRadius(0.4rem);
+						@include sc(0.4rem, rgb(240, 115, 115));
 					}
-					.food_num {
-						@include fj;
-						@include sc(0.6rem, #999);
-						margin-top: 0.3rem;
-						.special {
-							color: #f07373;
-							border: 0.05rem solid #f07373;
-							@include borderRadius(0.3rem);
-						}
-					}
-					.food_price {
-						@include fj;
-						.price_left {
-							span:nth-of-type(1) {
-								@include sc(0.7rem, #f07373);
-							}
-							span:nth-of-type(2) {
-								@include sc(0.8rem, #f07373);
-							}
-							span:nth-of-type(3) {
-								@include sc(0.5rem, #999);
-							}
+					.attribute_new {
+						position: absolute;
+						top: 0;
+						left: 0;
+						background-color: #4cd964;
+						@include wh(2rem, 2rem);
+						display: flex;
+						align-items: flex-end;
+						transform: rotate(-45deg) translate(-0.1rem, -1.5rem);
+						border: none;
+						border-radius: 0;
+						p {
+							@include sc(0.4rem, #fff);
+							text-align: center;
+							flex: 1;
 						}
 					}
 				}
 			}
-		}
-	}
-	.shop_cart_container {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		z-index: 15;
-		.food_list {
-			position: fixed;
-			width: 100%;
-			left: 0;
-			bottom: 2rem;
-			background-color: #fff;
-			z-index: 12;
-		}
-		.shop_cart {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 2rem;
-			width: 100%;
-			background-color: #3d3d3f;
-			display: flex;
-			align-items: center;
-			z-index: 15;
-			.cart_icon_container {
-				flex: 1;
-				.cart{
-					display: flex;
-					position: absolute;
-					bottom: 0.7rem;
-					left: 0.9rem;
-					padding: 0.4rem;
-					background-color: #3d3d3f;
-					border: 0.2rem solid #444;
-					box-shadow: 0 0 0.2rem #444;
-					@include borderRadius(50%);
-					&.bg_color{
-						background-color: #3190e8;
-					}
-					.num{
-					    position: absolute;
-						top: -0.25rem;
-						right: -0.25rem;
-						@include sc(0.5rem, #ffff);
-						@include borderRadius(50%);
-						@include wh(0.6rem,0.6rem);
-						line-height: 0.7rem;
-						text-align: center;
-						background-color: #ff461d;
-					}
-				}
-				.cart_icon {
-					@include wh(1.2rem, 1.2rem);
-					fill: #3190e8;
+			.food_num {
+				@include fj;
+				@include sc(0.6rem, #999);
+				margin-top: 0.3rem;
+				.special {
+					color: #f07373;
+					border: 0.05rem solid #f07373;
+					@include borderRadius(0.3rem);
 				}
 			}
-			.cart_num {
-				flex: 2;
-				.cart_num_sum{
-					@include sc(0.9rem, #fff);
-				}
-				.cart_num_send{
-					@include sc(0.5rem, #fff);
-				}
-			}
-			.cart_sum {
-				flex: 1;
-				height: 100%;
-				line-height: 2rem;
-				text-align: center;
-				@include sc(0.8rem, #fff);
-				&.active{
-					background-color: #4cd964;
+			.food_price {
+				@include fj;
+				.price_left {
+					span:nth-of-type(1) {
+						@include sc(0.7rem, #f07373);
+					}
+					span:nth-of-type(2) {
+						@include sc(0.8rem, #f07373);
+					}
+					span:nth-of-type(3) {
+						@include sc(0.5rem, #999);
+					}
 				}
 			}
 		}
@@ -873,6 +909,132 @@ export default {
         }
     }
 }
+.toggle_cart_container{
+	position: fixed;
+	width: 100%;
+	left: 0;
+	bottom: 2rem;
+	background-color: #fff;
+	z-index: 12;
+	.cart_header{
+		@include fj;
+		align-items: center;
+		background-color: #eceff1;
+		padding: 0.3rem 0.2rem;
+		h4{
+			@include sc(0.8rem, #666);
+		}
+		.clear_icon{
+			@include wh(0.6rem, 0.6rem);
+		}
+		.clear_all{
+			@include sc(0.6rem, #666);
+				vertical-align: middle;
+		}
+	}
+	.cart_list{
+		@include fj;
+		align-items: center;
+		padding: 0.6rem 0.3rem;
+		.cart_desc{
+			display: flex;
+			flex-direction: column;
+			span:nth-of-type(1) {
+				@include sc(0.8rem, #666);
+			}
+			span:nth-of-type(2) {
+				@include sc(0.6rem, #999);
+			}
+		}
+		.cart_price{
+			@include sc(0.7rem, #f60);
+		}
+		.cart_control{
+			display: flex;
+			align-items: center;
+			.reduce {
+				svg {
+					@include wh(0.9rem, 0.9rem);
+					fill: #3190e8;
+				}
+			}
+			.num {
+				@include sc(0.6rem, #999);
+				text-align: center;
+				min-width: 1rem;
+			}
+			.add {
+				svg {
+					@include wh(0.9rem, 0.9rem);
+					fill: #3190e8;
+				}
+			}
+		}
+	}
+}
+.cart_list_container {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	height: 2rem;
+	width: 100%;
+	background-color: #3d3d3f;
+	display: flex;
+	align-items: center;
+	z-index: 15;
+	.cart_icon_container {
+		flex: 1;
+		.cart{
+			display: flex;
+			position: absolute;
+			bottom: 0.7rem;
+			left: 0.9rem;
+			padding: 0.4rem;
+			background-color: #3d3d3f;
+			border: 0.2rem solid #444;
+			box-shadow: 0 0 0.2rem #444;
+			@include borderRadius(50%);
+			&.bg_color{
+				background-color: #3190e8;
+			}
+			.num{
+				position: absolute;
+				top: -0.25rem;
+				right: -0.25rem;
+				@include sc(0.5rem, #ffff);
+				@include borderRadius(50%);
+				@include wh(0.6rem,0.6rem);
+				line-height: 0.7rem;
+				text-align: center;
+				background-color: #ff461d;
+			}
+		}
+		.cart_icon {
+			@include wh(1.2rem, 1.2rem);
+			fill: #3190e8;
+		}
+	}
+	.cart_num {
+		flex: 2;
+		.cart_num_sum{
+			@include sc(0.9rem, #fff);
+		}
+		.cart_num_send{
+			@include sc(0.5rem, #fff);
+		}
+	}
+	.cart_sum {
+		flex: 1;
+		height: 100%;
+		line-height: 2rem;
+		text-align: center;
+		@include sc(0.8rem, #fff);
+		&.active{
+			background-color: #4cd964;
+		}
+	}
+}
 .shop_cart_cover {
 	position: fixed;
 	top: 0;
@@ -893,4 +1055,3 @@ export default {
 	opacity: 0;
 }
 </style>
-

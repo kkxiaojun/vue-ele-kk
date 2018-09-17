@@ -25,8 +25,7 @@ export default {
 	mounted() {},
 	props: {
 		rating: {
-			type: Number,
-			required: true
+			type: Number
 		}
 	},
 }

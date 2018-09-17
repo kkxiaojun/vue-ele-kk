@@ -4,4 +4,6 @@ export const RECORD_ADDRESS = 'RECORD_ADDRESS'
 export const SAVE_ADDRESS = 'SAVE_ADDRESS'
 export const SAVE_GEOHASH = 'SAVE_GEOHASH'
 // shop cart
+export const INIT_BUYCART = 'INIT_BUYCART'
 export const ADD_CART = 'ADD_CART'
+export const REDUCE_CART = 'REDUCE_CART'

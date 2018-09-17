@@ -114,7 +114,7 @@ export default {
 			// let res = await shopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType, this.deliveryMode, this.supportIds);
     },
     goShop(item) {
-      this.$router.push({path: 'shop',query: {geohash: this.geohash, id: item.id}});
+      this.$router.push({path: 'shop',query: {geohash: this.geohash, id: Number(item.id)}});
     }
 	},
 	watch:{
