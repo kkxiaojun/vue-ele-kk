@@ -66,7 +66,7 @@ export function getUser() {
 }
 /**
  * 获取个人中心地址列表
- * @param {String} userId 
+ * @param {String} userId
  */
 export function getAddressList(userId) {
   return axios({

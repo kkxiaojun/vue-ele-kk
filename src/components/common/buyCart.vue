@@ -50,7 +50,6 @@ export default {
          * 监听cartList变化，更新商铺的购物车信息shopCart，返回一个新的对象
          */
         shopCart: function (){
-            console.log(this.shopId)
             try {
                 this.cartList[this.shopId]
                 return Object.assign({},this.cartList[this.shopId])

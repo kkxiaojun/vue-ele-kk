@@ -147,7 +147,7 @@
 				<div class="cart_sum" :class="{active: false}">去结算</div>
 			</section>
 			<!-- cart遮罩层 -->
-			<section class="shop_cart_cover">cover</section>
+			<section class="shop_cart_cover" v-show="false">cover</section>
 		</section>
 	</transition>
 	<!-- 评论tab -->
@@ -252,8 +252,8 @@ import { mapState, mapMutations } from 'vuex'
 import { checkCode } from 'common/js/util'
 import { imgBaseUrl } from 'config/env'
 import { getImgPath } from 'common/js/mixin'
-import RatingStar from 'components/common/ratingStar'
 import BuyCart from 'components/common/buyCart'
+import RatingStar from 'components/common/ratingStar'
 export default {
 	data() {
 		return {
@@ -282,7 +282,6 @@ export default {
 		let query = this.$route.query
 		this.geohash = query.geohash
 		this.shopId = query.id
-		console.log(typeof this.shopId)
 		this.INIT_BUYCART()
 	},
 	mounted() {
@@ -292,7 +291,9 @@ export default {
 		...mapState(['latitude', 'longitude', 'cartList']),
 		//当前商店购物信息
 		shopCart: function (){
-			return {...this.cartList[this.shopId]};
+			try {
+				return {...this.cartList[this.shopId]};
+			} catch (error) {}
 		},
 		//购物车中总共商品的数量
 		totalNum: function (){
