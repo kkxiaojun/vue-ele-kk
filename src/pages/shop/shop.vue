@@ -291,9 +291,7 @@ export default {
 		...mapState(['latitude', 'longitude', 'cartList']),
 		//当前商店购物信息
 		shopCart: function (){
-			try {
-				return {...this.cartList[this.shopId]};
-			} catch (error) {}
+			return {...this.cartList[this.shopId]};
 		},
 		//购物车中总共商品的数量
 		totalNum: function (){
@@ -313,6 +311,7 @@ export default {
 			'ADD_CART', 'INIT_BUYCART'
 		]),
 		initData() {
+			console.log(this.cartList)
 			//防止刷新页面时，vuex状态丢失
 			if (!this.latitude) {
 				//获取位置信息

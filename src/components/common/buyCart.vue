@@ -50,10 +50,7 @@ export default {
          * 监听cartList变化，更新商铺的购物车信息shopCart，返回一个新的对象
          */
         shopCart: function (){
-            try {
-                this.cartList[this.shopId]
-                return Object.assign({},this.cartList[this.shopId])
-            } catch (error) {}
+            return Object.assign({},this.cartList[this.shopId])
         },
         /**
          * shopCart变化的时候重新计算当前商品的数量
