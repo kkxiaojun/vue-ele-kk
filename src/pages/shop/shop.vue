@@ -97,7 +97,7 @@
 				</ul>
 			</section>
 			<!-- toggle-cart -->
-			<section class="toggle_cart_container">
+			<section class="toggle_cart_container" v-if="toggleCartShow&&cartFoodList.length">
 				<header class="cart_header">
 					<h4>购物车</h4>
 					<p>
@@ -108,20 +108,23 @@
 					</p>
 				</header>
 				<ul>
-					<li class="cart_list">
+					<li class="cart_list" v-for="(item, index) in cartFoodList" :key="index">
 						<div class="cart_desc">
-							<span>name</span>
-							<span>desc</span>
+							<span>{{item.name}}</span>
+							<span>{{item.specs}}</span>
 						</div>
-						<div class="cart_price">¥20</div>
+						<div class="cart_price">
+							<span>¥</span>
+							<span>{{item.price}}</span>
+						</div>
 						<div class="cart_control">
-							<span class="reduce">
+							<span class="reduce" @click="removeOutCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
 								<svg>
 									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
 								</svg>
 							</span>
-							<span class="num">1</span>
-							<span class="add">
+							<span class="num">{{item.num}}</span>
+							<span class="add" @click="addToCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
 								<svg class="add_icon">
 									<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
 								</svg>
@@ -131,10 +134,10 @@
 				</ul>
 			</section>
 			<!-- 底部cart -->
-			<section class="cart_list_container">
+			<section class="cart_list_container" @click="toggleCart">
 				<div class="cart_icon_container">
 					<span class="cart" :class="{bg_color: false}">
-						<span class="num">1</span>
+						<span class="num" v-if="totalNum">{{totalNum}}</span>
 						<svg class="cart_icon">
 							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
 						</svg>
@@ -144,10 +147,13 @@
 					<p class="cart_num_sum">¥{{totalPrice}}</p>
 					<p class="cart_num_send">配送费¥5</p>
 				</div>
-				<div class="cart_sum" :class="{active: false}">去结算</div>
+				<div class="cart_sum" :class="{active: cartFoodList.length}">
+				  <span v-if="minSendPrice>0">还差{{minSendPrice}}元起送</span>
+				  <span @click="checkCart" v-else>去结算</span>
+				</div>
 			</section>
 			<!-- cart遮罩层 -->
-			<section class="shop_cart_cover" v-show="false">cover</section>
+			<section class="shop_cart_cover" v-show="toggleCartShow&&cartFoodList.length">cover</section>
 		</section>
 	</transition>
 	<!-- 评论tab -->
@@ -269,6 +275,7 @@ export default {
 			shopNavLeft: 'hot', // 商铺的热销榜与优惠切换
 			menuList: [], // 食品列表
 			showSpec: false, // 是否显示商品规格弹窗listenInCart
+			toggleCartShow: false, // 是否显示cartlist
 			choosedFoods: null, // 当前选中的商品规格数据
 			choosedFoodsSpecIndex: 0, // 当前选中商品规格的索引值
 			curMenu: 0, // 默认为0
@@ -301,6 +308,11 @@ export default {
 			})
 			return num
 		},
+		// 还差多少元起送，<= 0 显示去结算
+		minSendPrice: function () {
+			// 起送费 - 总价
+			return this.shopDetail.float_minimum_order_amount - this.totalPrice
+		},
 		shopNotice: function() {
 			return this.shopDetail.promotion_info || '欢迎！祝您用餐愉快。'
 		},
@@ -308,10 +320,9 @@ export default {
 	mixins: [getImgPath],
 	methods: {
 		...mapMutations([
-			'ADD_CART', 'INIT_BUYCART'
+			'ADD_CART', 'REDUCE_CART', 'INIT_BUYCART'
 		]),
 		initData() {
-			console.log(this.cartList)
 			//防止刷新页面时，vuex状态丢失
 			if (!this.latitude) {
 				//获取位置信息
@@ -386,6 +397,18 @@ export default {
 			this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs, packing_fee, sku_id, stock});
 			this.showGoodsSpec();
 		},
+		//加入购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+		addToCart(category_id, item_id, food_id, name, price, specs){
+			this.ADD_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs});
+		},
+		//移出购物车，所需7个参数，商铺id，食品分类id，食品id，食品规格id，食品名字，食品价格，食品规格
+		removeOutCart(category_id, item_id, food_id, name, price, specs){
+			this.REDUCE_CART({shopid: this.shopId, category_id, item_id, food_id, name, price, specs});
+		},
+		// 确认下单
+		checkCart() {
+			this.$router.push({path: 'confirmOrder',query: {shopId: this.shopId, geohash: this.geohash}})
+		},
 		/**
 		 * 初始化和shopCart变化时，重新获取购物车改变过的数据，赋值 categoryNum，totalPrice，cartFoodList，整个数据流是自上而下的形式，所有的购物车数据都交给vuex统一管理，包括购物车组件中自身的商品数量，使整个数据流更加清晰
 		 */
@@ -425,17 +448,26 @@ export default {
 			this.totalPrice = this.totalPrice.toFixed(2);
 			this.categoryNum = [...newArr];
 		},
+		// 点击底部cart，弹出与隐藏cart_list_container
+		toggleCart()  {
+			this.toggleCartShow = !this.toggleCartShow
+		},
 		// 控制小球 
 		showMoveBall() {
-
+			
 		},
 		goback() {
 			this.$router.go(-1)
 		}
 	},
 	watch: {
+		// 购物车信息发生变化，重新计算购物车信息
 		shopCart: function (value) {
 			this.initCategoryNum()
+		},
+		// menuList变化时，说明是刷新页面或者重新进入页面
+		menuList: function (value) {
+			this.initCategoryNum();
 		}
 	},
 	components: {
@@ -1029,7 +1061,10 @@ export default {
 		height: 100%;
 		line-height: 2rem;
 		text-align: center;
-		@include sc(0.8rem, #fff);
+		background-color: #626263;
+		span{
+			@include sc(0.8rem, #fff);
+		}
 		&.active{
 			background-color: #4cd964;
 		}

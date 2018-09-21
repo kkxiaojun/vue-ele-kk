@@ -13,6 +13,8 @@ const Search = () => import('../pages/search/search')
 const Order = () => import('../pages/order/order')
 const Food = () => import('../pages/food/food')
 const Shop = () => import('../pages/shop/shop')
+const ConfirmOrder = () => import('../pages/confirmOrder/confirmOrder')
+const ChooseAddress = () => import('../pages/confirmOrder/children/ChooseAddress')
 export default new Router({
   routes: [
     {
@@ -44,6 +46,16 @@ export default new Router({
       path: '/shop',
       name: 'shop',
       component: Shop
+    },
+    {
+      path: '/confirmOrder',
+      name: 'confirmOrder',
+      component: ConfirmOrder,
+      children:[{
+        path: 'chooseAddress',
+        name: 'chooseAddress',
+        component: ChooseAddress
+      }]
     },
     {
       path: '/search',
