@@ -70,7 +70,7 @@ export default {
 				if (checkCode(res.status)) {
 					this.userInfo = res.data
 					this.RECORD_USERINFO(res.data)
-          this.$router.go(-1)
+					this.$router.go(-1)
 				} else {
 					// 登录不成功处理
 				}

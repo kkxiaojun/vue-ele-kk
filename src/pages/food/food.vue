@@ -179,8 +179,7 @@
     </transition>
     <!-- shoplist -->
     <section class="shop_list_wrap">
-      <shop-list :geohash="geohash" :restaurant-category-id="restaurant_category_id" :restaurant-category-ids="restaurant_category_ids" 
-      :sort-by-type="sortByType" :delivery-mode="delivery_mode" :support-ids="support_ids" :confirm-select="confirmStatus" v-if="latitude"></shop-list>
+      <shop-list :geohash="geohash" :restaurant-category-id="restaurant_category_id" :restaurant-category-ids="restaurant_category_ids" :sort-by-type="sortByType" :delivery-mode="delivery_mode" :support-ids="support_ids" :confirm-select="confirmStatus" v-if="latitude"></shop-list>
     </section>
   </div>
 </template>
@@ -212,8 +211,8 @@ export default {
 		}
 	},
 	created() {
-    this.initData();
-  },
+		this.initData()
+	},
 	computed: {
 		...mapState(['latitude', 'longitude']),
 	},

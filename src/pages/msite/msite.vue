@@ -29,11 +29,11 @@
         </div>
       </section>
       <section class="shop_list_wrap">
-				<header class="shop_title">
+        <header class="shop_title">
           <svg class="title_icon">
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#shop"></use>
           </svg>
-        <span class="title_txt">附近商家</span>
+          <span class="title_txt">附近商家</span>
         </header>
         <shop-list v-if="hasGetGeohash" :geohash="geohash"></shop-list>
       </section>

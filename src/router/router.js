@@ -13,6 +13,8 @@ const Search = () => import('../pages/search/search')
 const Order = () => import('../pages/order/order')
 const Food = () => import('../pages/food/food')
 const Shop = () => import('../pages/shop/shop')
+const ShopDetail = () => import('../pages/shop/children/shopDetail.vue')
+const FoodDetail = () => import('../pages/shop/children/foodDetail.vue')
 const ConfirmOrder = () => import('../pages/confirmOrder/confirmOrder')
 const ChooseAddress = () => import('../pages/confirmOrder/children/ChooseAddress')
 export default new Router({
@@ -45,13 +47,25 @@ export default new Router({
     {
       path: '/shop',
       name: 'shop',
-      component: Shop
+      component: Shop,
+      children: [
+        {
+          path: 'shopDetail',
+          name: 'shopDetail',
+          component: ShopDetail
+        },
+        {
+          path: 'foodDetail',
+          name: 'foodDetail',
+          component: FoodDetail
+        }
+      ]
     },
     {
       path: '/confirmOrder',
       name: 'confirmOrder',
       component: ConfirmOrder,
-      children:[{
+      children: [{
         path: 'chooseAddress',
         name: 'chooseAddress',
         component: ChooseAddress

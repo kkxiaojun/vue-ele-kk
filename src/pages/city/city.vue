@@ -34,14 +34,14 @@ export default {
 			cityId: '',
 			cityName: '城市',
 			keyword: '', // 搜索词
-      historyList: [], // 搜索历史
-      placeList: [] // 搜索结果
+			historyList: [], // 搜索历史
+			placeList: [], // 搜索结果
 		}
 	},
 	created() {
 		this.initData()
-    this.cityId = this.$route.params.id
-    // 获取城市名
+		this.cityId = this.$route.params.id
+		// 获取城市名
 		getCityById(this.cityId, res => {
 			if (checkCode(res.status)) {
 				this.cityName = res.data.name
@@ -50,7 +50,7 @@ export default {
 	},
 	methods: {
 		initData() {
-      let placeHistory = getStore('placeHistory')
+			let placeHistory = getStore('placeHistory')
 			if (placeHistory) {
 				this.placeList = JSON.parse(placeHistory)
 			}
@@ -61,25 +61,25 @@ export default {
 					city_id: this.cityId,
 					keyword: this.keyword,
 					type: 'search',
-        }
-        // 根据输入进行搜索
+				}
+				// 根据输入进行搜索
 				searchByKeyword(params, res => {
 					if (checkCode(res.status)) {
 						this.placeList = res.data
 					}
 				})
 			}
-    },
-    /**
-     * 选择地点
-     */
+		},
+		/**
+		 * 选择地点
+		 */
 		nextPage(curPlace) {
-      let history = getStore('placeHistory')
-      // 是否存在搜索历史
+			let history = getStore('placeHistory')
+			// 是否存在搜索历史
 			if (history) {
 				let repeat = false
-        this.historyList = JSON.parse(history)
-        // 判断搜索历史中是否有此记录，无则添加
+				this.historyList = JSON.parse(history)
+				// 判断搜索历史中是否有此记录，无则添加
 				for (let index = 0; index < this.historyList.length; index++) {
 					if (curPlace.geohash === this.historyList[index].geohash) {
 						repeat = true

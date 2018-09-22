@@ -1,32 +1,32 @@
  <template>
-	<div class="rating_container">
-        <section class="star_container">
-            <svg class="grey_fill" v-for="num in starLen" :key="num">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#star"></use>
-            </svg>
-        </section>
-        <div :style="'width:' + rating*2/starLen + 'rem'" class="star_overflow">
-            <section class="star_container" >
-                <svg  class="orange_fill" v-for="num in starLen" :key="num">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#star"></use>
-                </svg>
-            </section>
-        </div>
+  <div class="rating_container">
+    <section class="star_container">
+      <svg class="grey_fill" v-for="num in starLen" :key="num">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#star"></use>
+      </svg>
+    </section>
+    <div :style="'width:' + rating*2/starLen + 'rem'" class="star_overflow">
+      <section class="star_container">
+        <svg class="orange_fill" v-for="num in starLen" :key="num">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#star"></use>
+        </svg>
+      </section>
     </div>
+  </div>
 </template>
 
 <script>
 export default {
 	data() {
 		return {
-            starLen: 5 // star数量
-        }
+			starLen: 5, // star数量
+		}
 	},
 	mounted() {},
 	props: {
 		rating: {
-			type: Number
-		}
+			type: Number,
+		},
 	},
 }
 </script>

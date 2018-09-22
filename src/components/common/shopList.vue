@@ -66,28 +66,28 @@ export default {
 		},
 		// 分类选择列表
 		restaurantCategoryId: {
-			type: [String, Number]
+			type: [String, Number],
 		},
 		// 分类选择列表-> 具体food
 		restaurantCategoryIds: {
-			type: [String, Number]
+			type: [String, Number],
 		},
 		// 排序方式
 		sortByType: {
-			type: String
+			type: String,
 		},
 		// 筛选方式
 		deliveryMode: {
-			type: [Number, String]
+			type: [Number, String],
 		},
 		// 选中的商铺活动列表
 		supportIds: {
-			type: Array
+			type: Array,
 		},
 		// 确认按钮
-		confirmSelect:{
-			type: Boolean
-		}
+		confirmSelect: {
+			type: Boolean,
+		},
 	},
 	mounted() {
 		this.initData()
@@ -95,42 +95,49 @@ export default {
 	methods: {
 		initData() {
 			// 获取shop列表
-			getShopList(this.latitude, this.longitude, this.offset, this.restaurantCategoryId)
-			 .then(res => {
+			getShopList(this.latitude, this.longitude, this.offset, this.restaurantCategoryId).then(res => {
 				if (checkCode(res.status)) {
 					// 引用数据，深复制。考虑到本地模拟数据是引用类型，所以返回一个新的数组
 					this.shopList = [...res.data]
 				}
-			 })
+			})
 		},
 		listenCategoryIds() {
-			getShopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType , this.deliveryMode, this.supportIds)
-			 .then(res => {
+			getShopList(
+				this.latitude,
+				this.longitude,
+				this.offset,
+				'',
+				this.restaurantCategoryIds,
+				this.sortByType,
+				this.deliveryMode,
+				this.supportIds
+			).then(res => {
 				if (checkCode(res.status)) {
 					// 引用数据，深复制。考虑到本地模拟数据是引用类型，所以返回一个新的数组
 					this.shopList = [...res.data]
 				}
-			 })
+			})
 			// let res = await shopList(this.latitude, this.longitude, this.offset, '', this.restaurantCategoryIds, this.sortByType, this.deliveryMode, this.supportIds);
-    },
-    goShop(item) {
-      this.$router.push({path: 'shop',query: {geohash: this.geohash, id: Number(item.id)}});
-    }
+		},
+		goShop(item) {
+			this.$router.push({ path: 'shop', query: { geohash: this.geohash, id: Number(item.id) } })
+		},
 	},
-	watch:{
-		restaurantCategoryIds: function () {
+	watch: {
+		restaurantCategoryIds: function() {
 			this.listenCategoryIds()
 		},
-		sortByType: function () {
+		sortByType: function() {
 			this.listenCategoryIds()
 		},
-		confirmSelect: function () {
+		confirmSelect: function() {
 			this.listenCategoryIds()
-		}
+		},
 	},
 	components: {
-		RatingStar
-	}
+		RatingStar,
+	},
 }
 </script>
 <style lang="scss" scoped>

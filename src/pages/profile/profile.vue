@@ -3,7 +3,7 @@
     <head-top head-title="我的" :sign-up="true" :go-back="true"></head-top>
     <section class="profile_bar">
       <a href="" class="link">
-        <img :src="avatar"/>
+        <img :src="avatar" />
         <div class="number">
           <p class="username">{{username}}</p>
           <p class="msg">
@@ -150,14 +150,14 @@ export default {
 	},
 	methods: {
 		initUserInfo() {
-      if (this.userInfo) {
-        this.username = this.userInfo.username
-        this.avatar = this.userInfo.avatar
-        this.phone = this.userInfo.mobile ? this.userInfo.mobile : '未绑定手机号'
-        this.balance = this.userInfo.balance
-        this.discount = this.userInfo.gift_amount
-        this.point = this.userInfo.point
-      }
+			if (this.userInfo) {
+				this.username = this.userInfo.username
+				this.avatar = this.userInfo.avatar
+				this.phone = this.userInfo.mobile ? this.userInfo.mobile : '未绑定手机号'
+				this.balance = this.userInfo.balance
+				this.discount = this.userInfo.gift_amount
+				this.point = this.userInfo.point
+			}
 		},
 	},
 	components: {
