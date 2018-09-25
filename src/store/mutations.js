@@ -110,4 +110,21 @@ export default {
     state.cartList = { ...state.cartList };
     setStore('buyCart', state.cartList);
   },
+  // 保存shopId
+  [TYPE.SAVE_SHOPID](state, shopid) {
+    state.shopid = shopid
+  },
+  // 保存下单后的cartid和sig
+  [TYPE.SAVE_CART_ID_SIG](state, { cartId, sig }) {
+    state.cart_id = cartId
+    state.sig = sig
+  },
+  // 保存选择后的下单地址和index索引
+  [TYPE.CHOOSE_ADDRESS](state, {
+    address,
+    index
+  }) {
+		state.choosedAddress = address;
+		state.addressIndex = index;
+  }
 }

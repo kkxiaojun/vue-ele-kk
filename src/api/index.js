@@ -65,7 +65,7 @@ export function getUser() {
   })
 }
 /**
- * 获取个人中心地址列表
+ * 个人中心编辑地址列表
  * @param {String} userId
  */
 export function getAddressList(userId) {
@@ -73,6 +73,39 @@ export function getAddressList(userId) {
     method: 'get',
     url: '/v1/users/' + userId + '/addresses'
   })
+}
+/**
+ * 个人中心搜索地址
+ * @param {*} keyword 
+ * @param {*} callback 
+ */
+export function getSearchAddress(keyword, callback) {
+  axios({
+    method: 'get',
+    url: 'api/v1/pos',
+    params:{
+      keyword: keyword,
+      type: 'nearby'
+    }
+  })
+}
+/**
+ * 删除地址
+ * @param {*} userid 
+ * @param {*} addrsid 
+ * @param {*} callback 
+ */
+export function deleteAddress(userid, addrsid, callback) {
+  axios({
+    method: 'delete',
+    url: '/v1/users/' + userid + '/addresses/' + addressid
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
 }
 /**
  * 获取城市信息
@@ -277,7 +310,7 @@ export function getShopMenu(shopId, callback) {
     })
 }
 /**
- * 
+ * 获取评分分数
  * @param {Number} shopId 
  * @param {func} callback 
  */
@@ -294,7 +327,7 @@ export function getShopScore(shopId, callback) {
     })
 }
 /**
- * 
+ * 获取评论的tag标签
  * @param {Number} shopId 
  * @param {func} callback 
  */
@@ -310,6 +343,13 @@ export function getRatingTag(shopId, callback) {
       callback(err)
     })
 }
+/**
+ * 获取评分列表
+ * @param {*} shopId 
+ * @param {*} offset 
+ * @param {*} tag_name 
+ * @param {*} callback 
+ */
 export function getRatingList(shopId, offset, tag_name = '', callback) {
   let params = {
     has_content: true,
@@ -320,6 +360,32 @@ export function getRatingList(shopId, offset, tag_name = '', callback) {
   axios({
     method: 'get',
     url: 'api/ugc/v2/restaurants/' + shopId + '/ratings',
+    data: params
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
+      callback(err)
+    })
+}
+/**
+ * 确认订单
+ * @param {*} geohash 
+ * @param {*} entities 
+ * @param {*} shopid 
+ * @param {*} callback 
+ */
+export function checkout(geohash, entities, shopid, callback) {
+  let params = {
+    come_from: 'web',
+    geohash,
+    entities,
+    restaurant_id: shopid
+  }
+  axios({
+    method: 'post',
+    url: 'api/v1/carts/checkout',
     data: params
   })
     .then(res => {

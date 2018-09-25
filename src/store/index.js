@@ -14,6 +14,10 @@ const state = {
   userInfo: null, // 用户信息
   shopid: null, //商铺id
   cartList: {}, // 加入购物车的商品列表
+  choosedAddress: null, // 订单的下单地址
+  addressIndex: null, // 订单的下单地址索引
+  cartId: null, // 购物车id
+  sig: null, // 购物车sig
 }
 
 export default new Vuex.Store({

@@ -106,14 +106,91 @@
   </div>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
 import HeadTop from 'components/header/header'
+import { imgBaseUrl } from 'config/env'
+import { checkout, getAddressList } from 'api/index'
+import { checkCode } from 'common/js/util'
 export default {
 	data() {
 		return {
-			choosedAddress: true,
+			choosedAddress: true, // 是否选择了地址
+			shopId: null, // shop的id标识
+			geohash: null, // 定位经纬度
+			shopCart: null, // 购物车数据
+      imgBaseUrl: null, // img域名
+      checkoutData: null, //订单满足条件，返回的数据
 		}
 	},
-	methods: {},
+	created() {
+		let query = this.$route.query
+		// 获取上个页面传来的shopId
+		this.shopId = query.shopId
+		// 获取上个页面传来的geohash
+		this.geohash = query.geohash
+		// 初始化购物车
+		this.INIT_BUYCART()
+		// 保存shopId
+		this.SAVE_SHOPID(this.shopId)
+		// 获取购物车数据
+		this.shopCart = this.cartList[this.shopId]
+	},
+	mounted() {
+		if (this.geohash) {
+			this.initData()
+			this.SAVE_GEOHASH(this.geohash)
+		}
+	},
+	computed: {
+		...mapState(['cartList', 'userInfo']),
+	},
+	methods: {
+		...mapMutations(['INIT_BUYCART', 'SAVE_SHOPID', 'SAVE_GEOHASH', 'SAVE_CART_ID_SIG', 'CHOOSE_ADDRESS']),
+		initData() {
+      let newArr = []
+			// 处理购物车数据
+			Object.values(this.shopCart).forEach(categoryItem => {
+				Object.values(categoryItem).forEach(itemValue => {
+					Object.values(itemValue).forEach(item => {
+						newArr.push({
+							attrs: [],
+							extra: {},
+							id: item.id,
+							name: item.name,
+							packing_fee: item.packing_fee,
+							price: item.price,
+							quantity: item.num,
+							sku_id: item.sku_id,
+							specs: [item.specs],
+							stock: item.stock,
+						})
+					})
+				})
+			})
+      //检验订单是否满足条件
+      checkout(this.geohash, [newArr], this.shopId, res => {
+        if (checkCode(res.status)) {
+          this.checkoutData = res.data
+          // 保存下单的cartid和sig
+          this.SAVE_CART_ID_SIG({cart_id: this.checkoutData.cart.id, sig:  this.checkoutData.sig})
+			    this.initAddress()
+        }
+      })
+    },
+    initAddress() {
+      if (this.userInfo && this.userInfo.user_id) {
+        // 默认选择第一个地址
+        getAddressList(this.userInfo.user_id, res => {
+          if (checkCode(res.status)) {
+            let addressRes = res.data
+            if (addressRes instanceof Array && addressRes.length) {
+              this.CHOOSE_ADDRESS({addres: addressRes[0], index: 0})
+            }
+          }
+        })
+      }
+    }
+	},
 	components: {
 		HeadTop,
 	},
