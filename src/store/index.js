@@ -18,6 +18,7 @@ const state = {
   addressIndex: null, // 订单的下单地址索引
   cartId: null, // 购物车id
   sig: null, // 购物车sig
+  shopDetail: null, // 商铺详情
 }
 
 export default new Vuex.Store({

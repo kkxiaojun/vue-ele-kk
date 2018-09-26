@@ -125,6 +125,9 @@ export default {
     index
   }) {
 		state.choosedAddress = address;
-		state.addressIndex = index;
+		state.addressIndex = index
+  },
+  [TYPE.RECORD_SHOP_DETAIL](state, shopDetail) {
+    state.shopDetail = shopDetail
   }
 }

@@ -16,9 +16,11 @@
             <p class="shop_sendway ellipsis">商家配送/{{shopDetail.order_lead_time}}分钟到达/¥{{shopDetail.float_delivery_fee}}配送费</p>
             <p class="shop_notice ellipsis">公告：{{shopNotice}}</p>
           </section>
-          <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" version="1.1" class="right_arrow">
-            <path d="M0 0 L8 7 L0 14" stroke="#fff" stroke-width="1" fill="none" />
-          </svg>
+					<router-link :to="'shop/shopDetail'">
+						<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" version="1.1" class="right_arrow">
+							<path d="M0 0 L8 7 L0 14" stroke="#fff" stroke-width="1" fill="none" />
+						</svg>
+					</router-link>
         </section>
         <section class="top_footer" v-if="shopDetail.activities && shopDetail.activities.length">
           <p class="footer_discount">
@@ -250,6 +252,7 @@
         </footer>
       </div>
     </section>
+		<router-view></router-view>
   </div>
 </template>
 <script>
@@ -319,7 +322,7 @@ export default {
 	},
 	mixins: [getImgPath],
 	methods: {
-		...mapMutations(['ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART']),
+		...mapMutations(['ADD_CART', 'REDUCE_CART', 'INIT_BUYCART', 'CLEAR_CART', 'RECORD_SHOP_DETAIL']),
 		initData() {
 			//防止刷新页面时，vuex状态丢失
 			if (!this.latitude) {
@@ -335,6 +338,7 @@ export default {
 			getShop(this.shopId, this.latitude, this.longitude, res => {
 				if (checkCode(res.status)) {
 					this.shopDetail = res.data
+					this.RECORD_SHOP_DETAIL(res.data)
 				}
 			})
 			// 获取左边菜单
