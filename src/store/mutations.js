@@ -127,7 +127,16 @@ export default {
 		state.choosedAddress = address;
 		state.addressIndex = index
   },
+  // 记录商品详情信息
   [TYPE.RECORD_SHOP_DETAIL](state, shopDetail) {
     state.shopDetail = shopDetail
+  },
+	// 确认订单页添加的新的的地址
+	[TYPE.RECORD_NEW_ADDRESS](state, newAddress) {
+		state.newAddress.push(newAddress);
+  },
+  // 搜索并选择的地址
+  [TYPE.CHOOSE_SEARCH_ADDRESS](state, searchAddress) {
+    state.searchAddress = searchAddress
   }
 }

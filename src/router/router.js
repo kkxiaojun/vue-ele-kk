@@ -16,7 +16,10 @@ const Shop = () => import('../pages/shop/shop')
 const ShopDetail = () => import('../pages/shop/children/shopDetail')
 const FoodDetail = () => import('../pages/shop/children/foodDetail')
 const ConfirmOrder = () => import('../pages/confirmOrder/confirmOrder')
-const ChooseAddress = () => import('../pages/confirmOrder/children/ChooseAddress')
+const ChooseAddress = () => import('../pages/confirmOrder/children/chooseAddress')
+const AddAddress = () => import('../pages/confirmOrder/children/children/addAddress')
+const SearchAddress = () => import('../pages/confirmOrder/children/children/children/searchAddress')
+const Remarks = () => import('../pages/confirmOrder/children/remarks')
 export default new Router({
   routes: [
     {
@@ -65,11 +68,33 @@ export default new Router({
       path: '/confirmOrder',
       name: 'confirmOrder',
       component: ConfirmOrder,
-      children: [{
-        path: 'chooseAddress',
-        name: 'chooseAddress',
-        component: ChooseAddress
-      }]
+      children: [
+        {
+          path: 'chooseAddress',
+          name: 'chooseAddress',
+          component: ChooseAddress,
+          children: [
+            {
+              path: 'addAddress',
+              name: 'addAddress',
+              component: AddAddress,
+              children: [
+                {
+                  path: 'searchAddress',
+                  name: 'searchAddress',
+                  component: SearchAddress,
+                  
+                }
+              ]
+            }
+          ]
+        },
+        {
+          path: 'remarks',
+          name: 'remarks',
+          component: Remarks
+        }
+      ]
     },
     {
       path: '/search',

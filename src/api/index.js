@@ -395,3 +395,54 @@ export function checkout(geohash, entities, shopid, callback) {
       callback(err)
     })
 }
+/**
+ * 添加新地址
+ * @param {*} userId 
+ * @param {*} address 
+ * @param {*} address_detail 
+ * @param {*} geohash 
+ * @param {*} name 
+ * @param {*} phone 
+ * @param {*} phone_bk 
+ * @param {*} poi_type 
+ * @param {*} sex 
+ * @param {*} tag 
+ * @param {*} tag_type 
+ */
+export function addNewAddress(userId, address, address_detail, geohash, name, phone, phone_bk, poi_type, sex, tag, tag_type) {
+  let params = {
+    address,
+    address_detail,
+    geohash,
+    name,
+    phone,
+    phone_bk,
+    poi_type,
+    sex,
+    tag,
+    tag_type
+  }
+  return axios({
+    method: 'post',
+    url: 'api/v1/users/' + userId + '/addresses',
+    data:params
+  })
+}
+
+export function searchNearby(keyword, callback) {
+  let data = {
+    type: 'nearby',
+    keyword
+  }
+  axios({
+    method: 'get',
+    url: 'api/v1/pois',
+    params: data
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(res => {
+      callback(err)
+    })
+}

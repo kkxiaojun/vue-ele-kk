@@ -1,107 +1,109 @@
 <template>
   <div class="confirm-order">
     <head-top head-title="确认订单" :go-back="true" :sign-up="false"></head-top>
-    <router-link to="/confirmOrder/chooseAddress" class="delivery_address delivery_container">
-      <svg class="location_icon">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
-      </svg>
-      <div class="choose_addr_null" v-if="!choosedAddress">请选择一个收货地址</div>
-      <div class="choose_addr" v-else>
-        <p class="person_desc">
-          <span class="person_desc_name">zhaoguojun</span>
-          <span class="person_desc_sex">先生</span>
-          <span class="person_desc_phone">13415454545</span>
-        </p>
-        <p class="person_desc">
-          <span class="person_desc_tag">无</span>
-          <span class="person_desc_no">2819</span>
-        </p>
-      </div>
-      <svg class="choose_detail_page">
-        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-      </svg>
-    </router-link>
-    <section class="delivery_time delivery_container">
-      <div class="time_tag">送达时间</div>
-      <div class="time_desc">
-        <p class="bird_detail">
-          <span>尽快送达</span>
-          <span>|</span>
-          <span>预计</span>
-          <span>12:00</span>
-        </p>
-        <span class="bird_send">蜂鸟专送</span>
-      </div>
-    </section>
-    <section class="delivery_payway delivery_container">
-      <div class="pay_way">
-        <div class="pay_way_desc">支付方式</div>
-        <div>
-          <span>在线支付</span>
-          <svg class="choose_pay_way">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-          </svg>
-        </div>
-      </div>
-      <div class="pay_way">
-        <div>红包</div>
-        <div>暂时只在饿了么 APP 中支持</div>
-      </div>
-    </section>
-    <section class="delivery_food delivery_container">
-      <header class="food_head">
-        <img src="" alt="1">
-        <span>效果演示</span>
-      </header>
-      <ul class="food_list">
-        <li class="food_list_li food_container">
-          <p>dd</p>
-          <div>
-            <span class="spec">x 1</span>
-            <span>¥20</span>
-          </div>
-        </li>
-        <div class="food_list_li food_container">
-          <span>餐盒</span>
-          <span>¥ 20</span>
-        </div>
-        <div class="food_list_li food_container">
-          <p>配送费</p>
-          <span>¥ 4</span>
-        </div>
-        <div class="food_list_li food_container">
-          <p>订单¥130</p>
-          <div>
-            <p class="spec">代支付</p>
-            <p class="spec">¥49</p>
-          </div>
-        </div>
-      </ul>
-    </section>
-    <section class="delivery_payway delivery_container mb">
-      <div class="pay_way">
-        <div class="pay_way_desc">订单备注</div>
-        <div>
-          <span>少辣</span>
-          <svg class="choose_pay_way">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-          </svg>
-        </div>
-      </div>
-      <div class="pay_way">
-        <div class="pay_way_desc">订单备注</div>
-        <div>
-          <span>少辣</span>
-          <svg class="choose_pay_way">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-          </svg>
-        </div>
-      </div>
-    </section>
-    <footer class="delivery_pay">
-      <p>待支付 ¥20</p>
-      <p>确认下单</p>
-    </footer>
+		<section v-if="checkoutData">
+			<router-link :to="{path:'/confirmOrder/chooseAddress', query: {id: checkoutData.cart.id, sig: checkoutData.sig}}" class="delivery_address delivery_container">
+				<svg class="location_icon">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#location"></use>
+				</svg>
+				<div class="choose_addr_null" v-if="!choosedAddress">请选择一个收货地址</div>
+				<div class="choose_addr" v-else>
+					<p class="person_desc">
+						<span class="person_desc_name">{{choosedAddress.name}}</span>
+						<span class="person_desc_sex">{{chooseAddress.sex == 1 ? '先生' : 女士}}</span>
+						<span class="person_desc_phone">{{choosedAddress.phone}}</span>
+					</p>
+					<p class="person_desc">
+						<span class="person_desc_tag">无</span>
+						<span class="person_desc_no">{{chooseAddress.address_detail}}</span>
+					</p>
+				</div>
+				<svg class="choose_detail_page">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+				</svg>
+			</router-link>
+			<section class="delivery_time delivery_container">
+				<div class="time_tag">送达时间</div>
+				<div class="time_desc">
+					<p class="bird_detail">
+						<span>尽快送达</span>
+						<span>|</span>
+						<span>预计</span>
+						<span>{{checkoutData.delivery_reach_time}}</span>
+					</p>
+					<span class="bird_send" v-if="checkoutData.cart.is_deliver_by_fengniao">蜂鸟专送</span>
+				</div>
+			</section>
+			<section class="delivery_payway delivery_container">
+				<div class="pay_way">
+					<div class="pay_way_desc">支付方式</div>
+					<div>
+						<span>在线支付</span>
+						<svg class="choose_pay_way">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+						</svg>
+					</div>
+				</div>
+				<div class="pay_way">
+					<div>红包</div>
+					<div>暂时只在饿了么 APP 中支持</div>
+				</div>
+			</section>
+			<section class="delivery_food delivery_container">
+				<header class="food_head" v-if="checkoutData.cart.restaurant_info">
+					<img :src="imgBaseUrl + checkoutData.cart.restaurant_info.image_path">
+					<span>{{checkoutData.cart.restaurant_info.name}}</span>
+				</header>
+				<ul class="food_list">
+					<li class="food_list_li food_container" v-for="item in checkoutData.cart.groups[0]" :key="item.id">
+						<p>{{item.name}}</p>
+						<div>
+							<span class="spec">{{item.quantity}}</span>
+							<span>¥{{item.price}}</span>
+						</div>
+					</li>
+					<div class="food_list_li food_container" v-if="checkoutData.cart.extra">
+						<span>{{checkoutData.cart.extra[0].name}}</span>
+						<span>¥ {{checkoutData.cart.extra[0].price}}</span>
+					</div>
+					<div class="food_list_li food_container">
+						<p>配送费</p>
+						<span>¥ {{checkoutData.cart.deliver_amount || 0}}</span>
+					</div>
+					<div class="food_list_li food_container">
+						<p>订单¥ {{checkoutData.cart.total}}</p>
+						<div>
+							<p class="spec">代支付</p>
+							<p class="spec">¥{{checkoutData.cart.total}}</p>
+						</div>
+					</div>
+				</ul>
+			</section>
+			<section class="delivery_payway delivery_container mb">
+				<div class="pay_way">
+					<div class="pay_way_desc">订单备注</div>
+					<router-link :to='{path: "/confirmOrder/Remarks", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}'>
+						<span>少辣</span>
+						<svg class="choose_pay_way">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+						</svg>
+					</router-link>
+				</div>
+				<div class="pay_way">
+					<div class="pay_way_desc">订单备注</div>
+					<div>
+						<span>少辣</span>
+						<svg class="choose_pay_way">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+						</svg>
+					</div>
+				</div>
+			</section>
+			<footer class="delivery_pay">
+				<p>待支付 ¥ {{checkoutData.cart.total}}</p>
+				<p>确认下单</p>
+			</footer>
+		</section>
     <router-view></router-view>
   </div>
 </template>
@@ -114,12 +116,12 @@ import { checkCode } from 'common/js/util'
 export default {
 	data() {
 		return {
-			choosedAddress: true, // 是否选择了地址
 			shopId: null, // shop的id标识
 			geohash: null, // 定位经纬度
 			shopCart: null, // 购物车数据
       imgBaseUrl: null, // img域名
-      checkoutData: null, //订单满足条件，返回的数据
+			checkoutData: null, //订单满足条件，返回的数据
+			imgBaseUrl,
 		}
 	},
 	created() {
@@ -142,7 +144,7 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['cartList', 'userInfo']),
+		...mapState(['cartList', 'userInfo', 'choosedAddress']),
 	},
 	methods: {
 		...mapMutations(['INIT_BUYCART', 'SAVE_SHOPID', 'SAVE_GEOHASH', 'SAVE_CART_ID_SIG', 'CHOOSE_ADDRESS']),
@@ -170,7 +172,7 @@ export default {
       //检验订单是否满足条件
       checkout(this.geohash, [newArr], this.shopId, res => {
         if (checkCode(res.status)) {
-          this.checkoutData = res.data
+					this.checkoutData = res.data
           // 保存下单的cartid和sig
           this.SAVE_CART_ID_SIG({cart_id: this.checkoutData.cart.id, sig:  this.checkoutData.sig})
 			    this.initAddress()
@@ -295,9 +297,12 @@ export default {
 }
 .delivery_food {
 	.food_head {
+		display: flex;
+    align-items: center;
 		padding: 1rem 0;
 		img {
 			@include wh(1rem, 1rem);
+			margin-right: 0.2rem;
 		}
 		span {
 			@include sc(0.8rem, #333);
