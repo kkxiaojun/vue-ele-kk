@@ -46,7 +46,7 @@ npm run build --report
 - [ ] 服务中心
 - [ ] 红包
 - [ ] 上传头像
-- [ ] 付款 -- 臣妾做不到啊~~
+- [ ] 付款 
 ## 说明
  当然，开始写的时候也可以根据原型图和界面功能结构一个个往下写，[饿了么app原型图链接地址](https://www.xiaopiu.com/user?uid=5b69b06ec496fe18064cd5c0&libPop=project&libId=5b69b085c496fe18064cd5c2)
 
