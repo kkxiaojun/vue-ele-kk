@@ -21,6 +21,8 @@ const state = {
   shopDetail: null, // 商铺详情
   newAddress: [], // 确认订单页新的地址
   searchAddress: null, // 搜索并选择的地址
+  remarkText: null, // 可选备注内容
+	inputText: '', // 输入备注内容
 }
 
 export default new Vuex.Store({

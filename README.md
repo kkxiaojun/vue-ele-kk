@@ -48,7 +48,8 @@ npm run build --report
 - [ ] 上传头像
 - [ ] 付款 
 ## 说明
- 当然，开始写的时候也可以根据原型图和界面功能结构一个个往下写，[饿了么app原型图链接地址](https://www.xiaopiu.com/user?uid=5b69b06ec496fe18064cd5c0&libPop=project&libId=5b69b085c496fe18064cd5c2)
+ 1. 购物车这一块的逻辑是比较复杂的，不清除数据结构不好写
+ 2. 当然，开始写的时候也可以根据原型图和界面功能结构一个个往下写，[饿了么app原型图链接地址](https://www.xiaopiu.com/user?uid=5b69b06ec496fe18064cd5c0&libPop=project&libId=5b69b085c496fe18064cd5c2)
 
 ## 附录
 ![图片](https://github.com/kkxiaojun/vue-ele-kk/blob/master/static/main.jpg)

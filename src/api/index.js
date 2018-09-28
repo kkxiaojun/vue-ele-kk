@@ -428,7 +428,11 @@ export function addNewAddress(userId, address, address_detail, geohash, name, ph
     data:params
   })
 }
-
+/**
+ * 搜索附近地址
+ * @param {*} keyword 
+ * @param {*} callback 
+ */
 export function searchNearby(keyword, callback) {
   let data = {
     type: 'nearby',
@@ -443,6 +447,24 @@ export function searchNearby(keyword, callback) {
       callback(res)
     })
     .catch(res => {
+      callback(err)
+    })
+}
+/**
+ * 获取快速备注列表
+ * @param {*} id 
+ * @param {*} sig 
+ */
+export function getRemark(id, sig, callback) {
+  axios({
+    method: 'get',
+    url: 'api/v1/carts/' + id + '/remarks',
+    params:{sig:sig}
+  })
+    .then(res => {
+      callback(res)
+    })
+    .catch(err => {
       callback(err)
     })
 }

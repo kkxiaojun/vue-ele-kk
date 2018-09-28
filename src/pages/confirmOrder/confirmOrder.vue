@@ -37,7 +37,7 @@
 		<section class="delivery_payway delivery_container">
 			<div class="pay_way">
 				<div class="pay_way_desc">支付方式</div>
-				<div>
+				<div @click="showPayWayFun">
 					<span>在线支付</span>
 					<svg class="choose_pay_way">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
@@ -83,16 +83,16 @@
 			<div class="pay_way">
 				<div class="pay_way_desc">订单备注</div>
 				<router-link :to='{path: "/confirmOrder/Remarks", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}'>
-					<span>少辣</span>
+					<span>{{remarkText||inputText? remarklist: '口味、偏好等'}}</span>
 					<svg class="choose_pay_way">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
 					</svg>
 				</router-link>
 			</div>
 			<div class="pay_way">
-				<div class="pay_way_desc">订单备注</div>
+				<div class="pay_way_desc">发票抬头</div>
 				<div>
-					<span>少辣</span>
+					<span>{{checkoutData.invoice.status_text}}</span>
 					<svg class="choose_pay_way">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
 					</svg>
@@ -101,8 +101,22 @@
 		</section>
 		<footer class="delivery_pay">
 			<p>待支付 ¥ {{checkoutData.cart.total}}</p>
-			<p>确认下单</p>
+			<p @click="confirmOrder">确认下单</p>
 		</footer>
+		<transition name="fade">
+			<section class="choose_payway_cover" v-if="showPayWay" @click="showPayWayFun"></section>
+		</transition>
+		<transition name="slip-up">
+			<section class="choose_payway" v-if="showPayWay">
+				<header>支付方式</header>
+				<p v-for="item in checkoutData.payments" :key="item.id" :class="{choosed: payWayId == item.id}">
+					<span>{{item.name}}<span v-if="!item.is_online_payment">{{item.description}}</span></span>
+					<svg class="choosed_pay" @click="choosePayWay(item.is_online_payment, item.id)">
+						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
+					</svg>
+				</p>
+			</section>
+		</transition>
 	</section>
     <router-view></router-view>
   </div>
@@ -122,6 +136,8 @@ export default {
 			imgBaseUrl: null, // img域名
 			checkoutData: null, //订单满足条件，返回的数据
 			imgBaseUrl,
+			showPayWay: false, // 展示付快方式选择
+			payWayId: 1, // 付款方式
 		}
 	},
 	created() {
@@ -144,7 +160,21 @@ export default {
 		}
 	},
 	computed: {
-		...mapState(['cartList', 'userInfo', 'choosedAddress']),
+		...mapState(['cartList', 'userInfo', 'choosedAddress', 'remarkText', 'inputText']),
+		remarklist() {
+			let str = new String;
+			if (this.remarkText) {
+				Object.values(this.remarkText).forEach(item => {
+					str += item[1] + '，';
+				})
+			}
+			//是否有自定义备注，分开处理
+			if (this.inputText) {
+				return str + this.inputText;
+			}else{
+				return str.substr(0, str.lastIndexOf('，')) ;
+			}
+		}
 	},
 	methods: {
 		...mapMutations(['INIT_BUYCART', 'SAVE_SHOPID', 'SAVE_GEOHASH', 'SAVE_CART_ID_SIG', 'CHOOSE_ADDRESS']),
@@ -182,33 +212,43 @@ export default {
 		initAddress() {
 			if (this.userInfo && this.userInfo.user_id) {
 				// 默认选择第一个地址
-				getAddressList(this.userInfo.user_id)
-					.then(res => {
-						if (checkCode(res.status)) {
-							let addressRes = res.data
-							if (addressRes instanceof Array && addressRes.length) {
-								this.CHOOSE_ADDRESS({ address: addressRes[0], index: 0 })
-							}
+				getAddressList(this.userInfo.user_id).then(res => {
+					if (checkCode(res.status)) {
+						let addressRes = res.data
+						if (addressRes instanceof Array && addressRes.length) {
+							this.CHOOSE_ADDRESS({ address: addressRes[0], index: 0 })
 						}
-					})
+					}
+				})
 			}
 		},
-		iconColor(name){
-			switch(name){
-				case '公司': return '#4cd964';
-				case '学校': return '#3190e8';
+		showPayWayFun() {
+			this.showPayWay = !this.showPayWay
+		},
+		choosePayWay(online, id) {
+			if (online) {
+				this.showPayWay = !this.showPayWay
+				this.payWayId = id
+			}
+		},
+		confirmOrder() {
+			
+		},
+		iconColor(name) {
+			switch (name) {
+				case '公司':
+					return '#4cd964'
+				case '学校':
+					return '#3190e8'
 			}
 		},
 	},
 	watch: {
-		userInfo: function (value) {
+		userInfo: function(value) {
 			if (value && value.user_id) {
 				this.initData()
 			}
 		},
-		// choosedAddress: function (value) {
-		// 	this.initData()
-		// }
 	},
 	components: {
 		HeadTop,
@@ -360,6 +400,61 @@ export default {
 		line-height: 2rem;
 		background-color: $confirm;
 	}
+}
+.choose_payway_cover{
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(90, 90, 90, 0.5);
+}
+.choose_payway {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #fff;
+	padding-bottom: 1rem;
+	header{
+		text-align: center;
+		@include sc(0.8rem, #666);
+		line-height: 1.8rem;
+		background-color: #fafafa;
+	}
+	p{
+		@include fj;
+		align-items: center;
+		padding: 0.8rem 1rem;
+		span{
+			@include sc(0.7rem, #ccc);
+		}
+	}
+	.choosed_pay {
+		@include wh(0.8rem, 0.8rem);
+		margin-right: 0.4rem;
+		fill: #ccc;
+	}
+	.choosed{
+		svg{
+			fill: #4cd964;
+		}
+		span{
+			color: rgb(54, 52, 52);
+		}
+	}
+}
+.slip-up-enter-active, .slip-up-leave-active{
+	transition: all .3s;
+}
+.slip-up-enter, .slip-up-leave-active{
+	transform: translateY(100%);
+}
+.fade-enter-active, .fade-leave-active {
+	transition: opacity .3s;
+}
+.fade-enter, .fade-leave-active {
+	opacity: 0;
 }
 </style>
 

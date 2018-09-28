@@ -138,5 +138,13 @@ export default {
   // 搜索并选择的地址
   [TYPE.CHOOSE_SEARCH_ADDRESS](state, searchAddress) {
     state.searchAddress = searchAddress
+  },
+  // 订单备注
+  [TYPE.CONFIRM_REMARK](state, {
+    remarkText,
+    inputText
+  }) {
+    state.remarkText = remarkText
+    state.inputText = inputText
   }
 }
