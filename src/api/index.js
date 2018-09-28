@@ -71,7 +71,7 @@ export function getUser() {
 export function getAddressList(userId) {
   return axios({
     method: 'get',
-    url: '/v1/users/' + userId + '/addresses'
+    url: 'api/v1/users/' + userId + '/addresses'
   })
 }
 /**

@@ -6,34 +6,63 @@
 			<span>新增收货地址</span>
 		</router-link>
 		<ul class="address_list">
-			<li class="delivery_address delivery_container">
-				<svg class="choosed_address" :class="{default_address: true}">
-						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
+			<li class="delivery_address delivery_container" v-for="(item, index) in deliverable" :key="index" @click.prevent.stop="chooseAddress(item, index)">
+				<svg class="choosed_address" :class="{default_address: defaultIndex == index}">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
 				</svg>
 				<div class="choose_addr">
 					<p class="person_desc">
-						<span class="person_desc_name">1</span>
-						<span class="person_desc_sex">女士</span>
-						<span class="person_desc_phone">134</span>
+						<span class="person_desc_name">{{item.name}}</span>
+						<span class="person_desc_sex">{{item.sex == 1? '先生' : '女士'}}</span>
+						<span class="person_desc_phone">{{item.phone}}</span>
 					</p>
 					<p class="person_desc">
-						<span class="person_desc_tag">无</span>
-						<span class="person_desc_no">xio</span>
+						<span class="person_desc_tag" v-if="item.tag" :style="{backgroundColor: iconColor(item.tag)}">{{item.tag}}</span>
+						<span class="person_desc_no">{{item.address_detail}}</span>
 					</p>
 				</div>
 			</li>
 		</ul>
+		<section>
+		<ul class="address_list" v-if="deliverdisable.length">
+			<li class="delivery_address delivery_container" v-for="(item, index) in deliverdisable" :key="index">
+				<svg class="choosed_address">
+					<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
+				</svg>
+				<div class="choose_addr">
+					<p class="person_desc">
+						<span class="person_desc_name">{{item.name}}</span>
+						<span class="person_desc_sex">{{item.sex == 1? '先生' : '女士'}}</span>
+						<span class="person_desc_phone">{{item.phone}}</span>
+					</p>
+					<p class="person_desc">
+						<span class="person_desc_tag" v-if="item.tag" :style="{backgroundColor: '#ccc', color: '#fff'}">{{item.tag}}</span>
+						<span class="person_desc_no">{{address_detail}}</span>
+					</p>
+				</div>
+			</li>
+		</ul>
+		</section>
+		<alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
 		<router-view></router-view>
   </div>
 </template>
 <script>
 import HeadTop from 'components/header/header'
+import AlertTip from 'components/common/alertTip'
+import { mapState, mapMutations } from 'vuex'
+import { getAddressList } from 'api/index'
+import { checkCode } from 'common/js/util'
 export default {
 	data() {
 		return {
 			id: null,
 			sig: null,
 			addressList: [], // 地址列表
+			deliverable: [], //有效地址列表
+			deliverdisable: [], //无效地址列表
+			showAlert: false,
+			alertText: null,
 		}
 	},
 	created() {
@@ -41,8 +70,69 @@ export default {
 		this.id = query.id
 		this.sig = query.sig
 	},
+	mounted() {
+
+	},
+	computed: {
+		...mapState(['userInfo', 'newAddress', 'addressIndex']),
+		defaultIndex() {
+			if (this.addressIndex) {
+				return this.addressIndex
+			} else {
+				return 0
+			}
+		},
+	},
+	methods: {
+		...mapMutations(['CHOOSE_ADDRESS']),
+		initData: function() {
+			this.addressList = [];
+			this.deliverable = [];
+			this.deliverdisable = [];
+			if (this.userInfo && this.userInfo.user_id) {
+				getAddressList(this.userInfo.user_id)
+					.then(res => {
+						if (checkCode(res.status)) {
+							this.addressList = res.data
+							//将当前所有地址访问有效无效两种
+							this.addressList.forEach(item => {
+								if (item.is_deliverable) {
+									this.deliverable.push(item);
+								}else{
+									this.deliverdisable.push(item);
+								}
+							})
+						}
+					})
+			}
+		},
+		chooseAddress(address, index) {
+			this.CHOOSE_ADDRESS({address, index})
+			// 成功后返回上一页面
+			this.$router.go(-1)
+		},
+		iconColor(name){
+			switch(name){
+				case '公司': return '#4cd964';
+				case '学校': return '#3190e8';
+			}
+		},
+	},
+	watch: {
+		userInfo: function (value) {
+			if (value && value.user_id) {
+				this.initData()
+			}
+		},
+		// newAddress: function (value) {
+		// 	if (value) {
+		// 		this.initData()
+		// 	}
+		// }
+	},
 	components: {
 		HeadTop,
+		AlertTip,
 	},
 }
 </script>
@@ -63,13 +153,13 @@ export default {
 	align-items: center;
 	padding: 0.5rem 1rem;
 	background-color: #fff;
-	border-bottom: 0.03rem solid $bc; 
+	border-bottom: 0.03rem solid $bc;
 	.choosed_address {
 		@include wh(0.8rem, 0.8rem);
 		margin-right: 0.4rem;
 		fill: #ccc;
 	}
-	.default_address{
+	.default_address {
 		fill: #4cd964;
 	}
 	.choose_addr {
@@ -92,14 +182,15 @@ export default {
 		}
 	}
 }
-.add_icon_footer{
+.add_icon_footer {
 	position: absolute;
 	left: 0;
 	right: 0;
 	bottom: 1rem;
 	z-index: 101;
 	text-align: center;
-	img,span{
+	img,
+	span {
 		@include sc(0.8rem, $blue);
 		vertical-align: middle;
 	}

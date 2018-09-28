@@ -19,7 +19,7 @@ const state = {
   cartId: null, // 购物车id
   sig: null, // 购物车sig
   shopDetail: null, // 商铺详情
-  newAddress: null, // 确认订单页新的地址
+  newAddress: [], // 确认订单页新的地址
   searchAddress: null, // 搜索并选择的地址
 }
 

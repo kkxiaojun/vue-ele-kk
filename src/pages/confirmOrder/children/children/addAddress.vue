@@ -48,7 +48,10 @@
         </section>
     </section>
     <div class="determine" @click="addAddress">确定</div>
-    <router-view></router-view>
+    <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+    <transition name="router-slid" mode="out-in">
+        <router-view></router-view>
+    </transition>
   </div>
 </template>
 <script>
@@ -68,6 +71,8 @@ export default {
             phone_bk: false, // 是否选择备注电话
             anntherPhoneNumber: '', // 备注电话
             poi_type: 0, //地址类型
+            showAlert: false, //弹出框
+            alertText: null, //弹出框信息
         }
     },
     computed: {

@@ -138,7 +138,7 @@
           </ul>
         </section>
         <!-- 底部cart -->
-        <section class="cart_list_container" @click="toggleCart">
+        <section class="cart_list_container" @click.prevent.stop="toggleCart">
           <div class="cart_icon_container">
             <span class="cart" :class="{bg_color: false}">
               <span class="num" v-if="totalNum">{{totalNum}}</span>
@@ -153,7 +153,7 @@
           </div>
           <div class="cart_sum" :class="{active: cartFoodList.length}">
             <span v-if="minSendPrice>0">还差{{minSendPrice}}元起送</span>
-            <span class="spec" @click="checkCart" v-else>去结算</span>
+            <span class="spec" @click.prevent.stop="checkCart" v-else>去结算</span>
           </div>
         </section>
         <!-- cart遮罩层 -->

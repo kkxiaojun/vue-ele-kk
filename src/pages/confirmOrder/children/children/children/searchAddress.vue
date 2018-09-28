@@ -43,7 +43,7 @@ export default {
 		searchPlace() {
 			if (this.searchValue) {
                 searchNearby(this.searchValue, res => {
-                    if (checkCode(res.state)) {
+                    if (checkCode(res.status)) {
                         this.searchData = res.data
                     }
                 })
