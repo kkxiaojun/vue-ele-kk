@@ -124,11 +124,6 @@ export default {
 				this.initData()
 			}
 		},
-		// newAddress: function (value) {
-		// 	if (value) {
-		// 		this.initData()
-		// 	}
-		// }
 	},
 	components: {
 		HeadTop,

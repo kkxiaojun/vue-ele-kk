@@ -20,6 +20,7 @@ const ChooseAddress = () => import('../pages/confirmOrder/children/chooseAddress
 const AddAddress = () => import('../pages/confirmOrder/children/children/addAddress')
 const SearchAddress = () => import('../pages/confirmOrder/children/children/children/searchAddress')
 const Remarks = () => import('../pages/confirmOrder/children/remarks')
+const Payment = () => import('../pages/confirmOrder/children/payment')
 export default new Router({
   routes: [
     {
@@ -93,6 +94,11 @@ export default new Router({
           path: 'remarks',
           name: 'remarks',
           component: Remarks
+        },
+        {
+          path: 'payment',
+          name: 'payment',
+          component: Payment
         }
       ]
     },

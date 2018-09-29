@@ -1,5 +1,6 @@
 <template>
   <div class="order">
+    订单页面
     <foot-nav></foot-nav>
   </div>
 </template>

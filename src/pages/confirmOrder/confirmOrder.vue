@@ -83,7 +83,7 @@
 			<div class="pay_way">
 				<div class="pay_way_desc">订单备注</div>
 				<router-link :to='{path: "/confirmOrder/Remarks", query: {id: checkoutData.cart.id, sig: checkoutData.sig}}'>
-					<span>{{remarkText||inputText? remarklist: '口味、偏好等'}}</span>
+					<span class="ellipsis">{{remarkText||inputText? remarklist: '口味、偏好等'}}</span>
 					<svg class="choose_pay_way">
 						<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
 					</svg>
@@ -117,6 +117,7 @@
 				</p>
 			</section>
 		</transition>
+		<alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
 	</section>
     <router-view></router-view>
   </div>
@@ -124,8 +125,9 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import HeadTop from 'components/header/header'
+import AlertTip from 'components/common/alertTip'
 import { imgBaseUrl } from 'config/env'
-import { checkout, getAddressList } from 'api/index'
+import { checkout, getAddressList, placeOrders } from 'api/index'
 import { checkCode } from 'common/js/util'
 export default {
 	data() {
@@ -138,6 +140,8 @@ export default {
 			imgBaseUrl,
 			showPayWay: false, // 展示付快方式选择
 			payWayId: 1, // 付款方式
+			showAlert: false,
+			alertText: null
 		}
 	},
 	created() {
@@ -177,7 +181,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapMutations(['INIT_BUYCART', 'SAVE_SHOPID', 'SAVE_GEOHASH', 'SAVE_CART_ID_SIG', 'CHOOSE_ADDRESS']),
+		...mapMutations(['INIT_BUYCART', 'SAVE_SHOPID', 'SAVE_GEOHASH', 'SAVE_CART_ID_SIG', 'CHOOSE_ADDRESS', 'SAVE_ORDER_INFO', 'SAVE_ORDER_SUCCESS']),
 		initData() {
 			let newArr = []
 			// 处理购物车数据
@@ -231,8 +235,37 @@ export default {
 				this.payWayId = id
 			}
 		},
+		// 确认下单
 		confirmOrder() {
-			
+			// 用户未登录时弹出提示框
+			if (!this.userInfo && !this.userInfo.user_id) {
+				this.showAlert = true;
+				this.alertText = '请登录';
+				return
+			// 用户未选择地址则提示
+			}else if(!this.choosedAddress){
+				this.showAlert = true;
+				this.alertText = '请添加一个收货地址';
+				return
+			}
+			// 保存订单信息
+			this.SAVE_ORDER_INFO({
+				user_id: this.userInfo.user_id,
+				cart_id: this.checkoutData.cart.id,
+				address_id: this.choosedAddress.id,
+				description: this.remarklist,
+				entities: this.checkoutData.cart.groups,
+				geohash: this.geohash,
+				sig: this.checkoutData.sig,
+			});
+			// 发送订单信息
+			placeOrders(this.userInfo.user_id, this.checkoutData.cart.id, this.choosedAddress.id, this.remarklist, this.checkoutData.cart.groups, this.geohash, this.checkoutData.sig)
+				.then(res => {
+					if (checkCode(res.status)) {
+						this.SAVE_ORDER_SUCCESS(res.data);
+						this.$router.push('/confirmOrder/payment');
+					}
+				})
 		},
 		iconColor(name) {
 			switch (name) {
@@ -252,6 +285,7 @@ export default {
 	},
 	components: {
 		HeadTop,
+		AlertTip
 	},
 }
 </script>
@@ -342,6 +376,12 @@ export default {
 		opacity: 0.6;
 		.pay_way_desc {
 			font-weight: 700;
+		}
+		a{
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			width: 11rem;
 		}
 	}
 	.pay_way:nth-of-type(1) {

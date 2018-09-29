@@ -146,5 +146,13 @@ export default {
   }) {
     state.remarkText = remarkText
     state.inputText = inputText
+  },
+  // 保存下单时的数据，用户验证时使用
+  [TYPE.SAVE_ORDER_INFO](state, orderInfo) {
+    state.orderInfo = orderInfo
+  },
+  [TYPE.SAVE_ORDER_SUCCESS](state, orderSuccess) {
+    state.cartPrice = null
+    state.orderMessage = orderSuccess
   }
 }

@@ -468,3 +468,48 @@ export function getRemark(id, sig, callback) {
       callback(err)
     })
 }
+/**
+ * 确认下订单
+ * @param {*} user_id 
+ * @param {*} cart_id 
+ * @param {*} address_id 
+ * @param {*} description 
+ * @param {*} entities 
+ * @param {*} geohash 
+ * @param {*} sig 
+ */
+export function placeOrders(user_id, cart_id, address_id, description, entities, geohash, sig) {
+  let params = {
+    address_id,
+    come_from: "mobile_web",
+    deliver_time: "",
+    description,
+    entities,
+    geohash,
+    paymethod_id: 1,
+    sig,
+  }
+  return axios({
+    method: 'post',
+    url: 'api/v1/users/' + user_id + '/carts/' + cart_id + '/orders',
+    data: params
+  })
+}
+/**
+ * 重新发送订单验证码
+ * @param {*} merchantOrderNo 
+ * @param {*} userId 
+ */
+export function payRequest(merchantOrderNo, userId){
+  return axios({
+    method: 'get',
+    url: 'api/payapi/payment/queryOrder',
+    params:{
+      merchantId: 5,
+      merchantOrderNo,
+      source: 'MOBILE_WAP',
+      userId,
+      version: '1.0.0',
+    }
+  })
+}

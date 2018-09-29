@@ -22,7 +22,10 @@ const state = {
   newAddress: [], // 确认订单页新的地址
   searchAddress: null, // 搜索并选择的地址
   remarkText: null, // 可选备注内容
-	inputText: '', // 输入备注内容
+  inputText: '', // 输入备注内容
+  orderInfo: null, // 确认下单时的数据
+  orderMessage: null, // 保存下单成功的信息
+  cartPrice: null, // 会员卡价格
 }
 
 export default new Vuex.Store({
